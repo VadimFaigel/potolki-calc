@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Калькулятор потолков</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      --bg-color: #121212;
+      --card-bg: #1e1e1e;
+      --card-border: #2a2a2a;
+      --accent-color: #d49a51;
+      --accent-soft: rgba(212, 154, 81, 0.15);
+      --text-main: #ffffff;
+      --text-muted: #8e8e93;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      padding-bottom: 110px;
+    }
+
+    .tabs-header {
+      display: flex;
+      overflow-x: auto;
+      background-color: var(--card-bg);
+      border-bottom: 1px solid var(--card-border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      scrollbar-width: none;
+    }
+    .tabs-header::-webkit-scrollbar { display: none; }
+
+    .tab-btn {
+      flex: 1 0 auto;
+      padding: 14px 16px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+
+    .tab-btn.active {
+      color: var(--accent-color);
+      border-bottom-color: var(--accent-color);
+    }
+
+    .tab-content {
+      display: none;
+      padding: 16px;
+    }
+    .tab-content.active { display: block; }
+
+    .section-title {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 12px;
+    }
+
+    .input-group {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .input-group label {
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .input-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .input-wrapper input {
+      width: 100px;
+      background: #2a2a2a;
+      border: 1px solid #3a3a3a;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 600;
+      padding: 8px 12px;
+      text-align: right;
+      outline: none;
+    }
+    .input-wrapper input:focus {
+      border-color: var(--accent-color);
+    }
+
+    /* СЕТКА КУБИКОВ (ПЛИТКА) */
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr); /* По умолчанию 2 колонки на телефоне. Можешь поставить repeat(3, 1fr) или repeat(4, 1fr) */
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    /* Сам кубик */
+    .option-cube {
+      background: var(--card-bg);
+      border: 2px solid var(--card-border);
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .option-cube.selected {
+      border-color: var(--accent-color);
+      background: var(--accent-soft);
+    }
+
+    .cube-img {
+      width: 100%;
+      height: 100px; /* Высота картинки в кубике */
+      object-fit: cover;
+      background-color: #252525;
+    }
+
+    .cube-body {
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .cube-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+      line-height: 1.2;
+    }
+
+    .cube-price {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent-color);
+    }
+/* Информационный блок, который меняется снизу при выборе */
+    .info-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-top: 10px;
+    }
+    .info-box-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent-color);
+      margin-bottom: 4px;
+    }
+    .info-box-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* Нижняя панель */
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(18, 18, 18, 0.95);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid var(--card-border);
+      padding: 12px 16px 20px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 100;
+    }
+
+    .total-info .total-title {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .total-info .total-price {
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .total-info .price-per-m2 {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .btn-submit {
+      background: var(--accent-color);
+      color: #000;
+      border: none;
+      border-radius: 10px;
+      padding: 14px 20px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Шапка вкладок -->
+  <div class="tabs-header">
+    <button class="tab-btn active" onclick="switchTab('tab-size', this)">1. Размер</button>
+    <button class="tab-btn" onclick="switchTab('tab-canvas', this)">2. Полотно</button>
+    <button class="tab-btn" onclick="switchTab('tab-profile', this)">3. Примыкание</button>
+    <button class="tab-btn" onclick="switchTab('tab-curtains', this)">4. Карнизы</button>
+  </div>
+
+  <!-- Вкладка 1: Площадь -->
+  <div id="tab-size" class="tab-content active">
+    <div class="section-title">Параметры помещения</div>
+    <div class="input-group">
+      <label for="area-input">Площадь помещения:</label>
+      <div class="input-wrapper">
+        <input type="number" id="area-input" value="15" min="1" oninput="calculateTotal()">
+        <span style="color: var(--text-muted)">м²</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Вкладка 2: Полотно -->
+  <div id="tab-canvas" class="tab-content">
+    <div class="section-title">Выберите тип полотна</div>
+    
+    <div class="options-grid">
+      <!-- Кубик 1 -->
+      <div class="option-cube selected" onclick="selectOption('canvas', this, 500, 'Матовое MSD', 'Классическое матовое покрытие без бликов. Выглядит как идеально ровная оштукатуренная стена.')">
+        <img src="canvas1.jpg" alt="" class="cube-img" onerror="this.style.display='none'">
+        <div class="cube-body">
+          <div class="cube-title">Матовое MSD</div>
+          <div class="cube-price">500 ₽ / м²</div>
+        </div>
+      </div>
+
+      <!-- Кубик 2 -->
+      <div class="option-cube" onclick="selectOption('canvas', this, 700, 'Сатиновое / Глянцевое', 'Гладкая фактура с легким отражением света. Отлично визуально расширяет пространство.')">
+        <img src="canvas2.jpg" alt="" class="cube-img" onerror="this.style.display='none'">
+        <div class="cube-body">
+          <div class="cube-title">Сатиновое / Глянцевое</div>
+          <div class="cube-price">700 ₽ / м²</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Инфо-блок выбранного полотна -->
+    <div class="info-box">
+      <div id="canvas-info-title" class="info-box-title">Матовое MSD</div>
+      <div id="canvas-info-desc" class="info-box-desc">Классическое матовое покрытие без бликов. Выглядит как идеально ровная оштукатуренная стена.</div>
+    </div>
+  </div>
+
+  <!-- Вкладка 3: Примыкание -->
+  <div id="tab-profile" class="tab-content">
+    <div class="section-title">Тип примыкания профиля</div>
+
+    <div class="options-grid">
+      <!-- Кубик 1 -->
+<div class="option-cube selected" onclick="selectOption('profile', this, 0, 'Стандартное (с лентой)', 'Классический профиль по периметру с маскировочной лентой-заглушкой.')">
+        <img src="bagetplastik.jpg" alt="" class="cube-img" onerror="this.style.display='none'">
+        <div class="cube-body">
+          <div class="cube-title">Стандартное (с лентой)</div>
+          <div class="cube-price">0 ₽</div>
+        </div>
+      </div>
+
+      <!-- Кубик 2 -->
+      <div class="option-cube" onclick="selectOption('profile', this, 1200, 'Теневое (EuroKRAAB)', 'Стильный ровный зазор 6 мм вдоль стены. Создается эффект парящего в воздухе потолка.')">
+        <img src="profile2.jpg" alt="" class="cube-img" onerror="this.style.display='none'">
+        <div class="cube-body">
+          <div class="cube-title">Теневое (EuroKRAAB)</div>
+          <div class="cube-price">1200 ₽</div>
+        </div>
+      </div>
+      
+      <!-- Сюда можешь легко докидывать еще кубики (скопировав блок выше) -->
+    </div>
+
+    <!-- Инфо-блок выбранного примыкания -->
+    <div class="info-box">
+      <div id="profile-info-title" class="info-box-title">Стандартное (с лентой)</div>
+      <div id="profile-info-desc" class="info-box-desc">Классический профиль по периметру с маскировочной лентой-заглушкой.</div>
+    </div>
+  </div>
+
+  <!-- Вкладка 4: Карнизы -->
+  <div id="tab-curtains" class="tab-content">
+    <div class="section-title">Гардины и карнизы</div>
+
+    <div class="options-grid">
+      <!-- Кубик 1 -->
+      <div class="option-cube selected" onclick="selectOption('curtains', this, 0, 'Без карниза', 'Установка скрытых или накладных ниш для штор не требуется.')">
+        <img src="curtain1.jpg" alt="" class="cube-img" onerror="this.style.display='none'">
+        <div class="cube-body">
+          <div class="cube-title">Без карниза</div>
+          <div class="cube-price">0 ₽</div>
+        </div>
+      </div>
+
+      <!-- Кубик 2 -->
+      <div class="option-cube" onclick="selectOption('curtains', this, 2500, 'Скрытый карниз ПК-15', 'Утопленная в потолок специальная алюминиевая ниша. Шторы свисают прямо из потолка.')">
+        <img src="curtain2.jpg" alt="" class="cube-img" onerror="this.style.display='none'">
+        <div class="cube-body">
+          <div class="cube-title">Скрытый карниз ПК-15</div>
+          <div class="cube-price">2500 ₽</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Инфо-блок выбранного карниза -->
+    <div class="info-box">
+      <div id="curtains-info-title" class="info-box-title">Без карниза</div>
+      <div id="curtains-info-desc" class="info-box-desc">Установка скрытых или накладных ниш для штор не требуется.</div>
+    </div>
+  </div>
+
+  <!-- Нижняя панель -->
+  <div class="bottom-bar">
+    <div class="total-info">
+      <div class="total-title">Итого:</div>
+      <div class="total-price" id="total-price-val">0 ₽</div>
+      <div class="price-per-m2" id="price-per-m2-val">0 ₽ за м²</div>
+    </div>
+    <button class="btn-submit" onclick="sendData()">Оставить заявку</button>
+  </div>
+
+  <script>
+    var tg = window.Telegram ? window.Telegram.WebApp : null;
+    if (tg && tg.expand) { tg.expand(); }
+
+    var selectedPrices = { canvas: 500, profile: 0, curtains: 0 };
+    var selectedTitles = {
+      canvas: "Матовое MSD",
+      profile: "Стандартное (с лентой)",
+      curtains: "Без карниза"
+    };
+
+    function switchTab(tabId, btnElement) {
+      var contents = document.querySelectorAll('.tab-content');
+      for (var i = 0; i < contents.length; i++) { contents[i].classList.remove('active'); }
+      var btns = document.querySelectorAll('.tab-btn');
+      for (var i = 0; i < btns.length; i++) { btns[i].classList.remove('active'); }
+      document.getElementById(tabId).classList.add('active');
+      btnElement.classList.add('active');
+    }
+
+    function selectOption(category, cubeElement, price, title, desc) {
+      // Снимаем выделение со всех кубиков в этой вкладке
+var cubes = cubeElement.parentElement.querySelectorAll('.option-cube');
+      for (var i = 0; i < cubes.length; i++) { cubes[i].classList.remove('selected'); }
+      
+      // Выделяем нажатый кубик
+      cubeElement.classList.add('selected');
+      
+      selectedPrices[category] = price;
+      selectedTitles[category] = title;
+
+      // Обновляем текст в информационном блоке снизу
+      document.getElementById(category + '-info-title').innerText = title;
+      document.getElementById(category + '-info-desc').innerText = desc;
+
+      calculateTotal();
+    }
+
+    function calculateTotal() {
+      var areaInput = document.getElementById('area-input').value;
+      var area = parseFloat(areaInput) || 0;
+      var canvasCost = area * selectedPrices.canvas;
+      var total = canvasCost + selectedPrices.profile + selectedPrices.curtains;
+      var pricePerM2 = area > 0 ? Math.round(total / area) : 0;
+      document.getElementById('total-price-val').innerText = total.toLocaleString('ru-RU') + ' ₽';
+      document.getElementById('price-per-m2-val').innerText = pricePerM2.toLocaleString('ru-RU') + ' ₽ за м²';
+    }
+
+    function sendData() {
+      var area = document.getElementById('area-input').value;
+      var totalPrice = document.getElementById('total-price-val').innerText;
+      var orderData = {
+        area: area + ' м²',
+        canvas: selectedTitles.canvas,
+        profile: selectedTitles.profile,
+        curtains: selectedTitles.curtains,
+        totalPrice: totalPrice
+      };
+      if (tg && tg.sendData) {
+        tg.sendData(JSON.stringify(orderData));
+      } else {
+        alert("Заявка сформирована!\n\n" + JSON.stringify(orderData, null, 2));
+      }
+    }
+    calculateTotal();
+  </script>
+</body>
+</html>
