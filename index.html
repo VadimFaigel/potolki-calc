@@ -115,15 +115,14 @@
       border-color: var(--accent-color);
     }
 
-    /* СЕТКА КУБИКОВ (ПЛИТКА) */
+    /* СЕТКА КУБИКОВ */
     .options-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr); /* По умолчанию 2 колонки на телефоне. Можешь поставить repeat(3, 1fr) или repeat(4, 1fr) */
+      grid-template-columns: repeat(2, 1fr);
       gap: 12px;
       margin-bottom: 16px;
     }
 
-    /* Сам кубик */
     .option-cube {
       background: var(--card-bg);
       border: 2px solid var(--card-border);
@@ -142,7 +141,7 @@
 
     .cube-img {
       width: 100%;
-      height: 100px; /* Высота картинки в кубике */
+      height: 90px;
       object-fit: cover;
       background-color: #252525;
     }
@@ -153,37 +152,72 @@
       flex-direction: column;
       flex-grow: 1;
       justify-content: space-between;
-      gap: 6px;
+      gap: 4px;
     }
 
     .cube-title {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
       color: var(--text-main);
       line-height: 1.2;
     }
 
     .cube-price {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 700;
       color: var(--accent-color);
     }
-/* Информационный блок, который меняется снизу при выборе */
-    .info-box {
+
+    /* БОЛЬШОЙ БЛОК ПРЕВЬЮ СО СТРЕЛОЧКАМИ */
+    .preview-container {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 12px;
-      padding: 14px;
-      margin-top: 10px;
+      overflow: hidden;
+      margin-top: 12px;
+      position: relative;
     }
-    .info-box-title {
-      font-size: 14px;
+
+    .preview-big-img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      background-color: #252525;
+      display: block;
+    }
+
+    .slider-btn {
+      position: absolute;
+      top: 75px;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+      font-size: 16px;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .slider-btn.prev { left: 10px; }
+    .slider-btn.next { right: 10px; }
+
+    .preview-content {
+      padding: 14px;
+    }
+
+    .preview-title {
+      font-size: 15px;
       font-weight: 700;
       color: var(--accent-color);
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
-    .info-box-desc {
-      font-size: 12px;
+
+    .preview-desc {
+      font-size: 13px;
       color: var(--text-muted);
       line-height: 1.4;
     }
@@ -242,6 +276,7 @@
     <button class="tab-btn" onclick="switchTab('tab-canvas', this)">2. Полотно</button>
     <button class="tab-btn" onclick="switchTab('tab-profile', this)">3. Примыкание</button>
     <button class="tab-btn" onclick="switchTab('tab-curtains', this)">4. Карнизы</button>
+    <button class="tab-btn" onclick="switchTab('tab-lighting', this)">5. Световые решения</button>
   </div>
 
   <!-- Вкладка 1: Площадь -->
@@ -259,95 +294,60 @@
   <!-- Вкладка 2: Полотно -->
   <div id="tab-canvas" class="tab-content">
     <div class="section-title">Выберите тип полотна</div>
-    
-    <div class="options-grid">
-      <!-- Кубик 1 -->
-      <div class="option-cube selected" onclick="selectOption('canvas', this, 500, 'Матовое MSD', 'Классическое матовое покрытие без бликов. Выглядит как идеально ровная оштукатуренная стена.')">
-        <img src="canvas1.jpg" alt="" class="cube-img" onerror="this.style.display='none'">
-        <div class="cube-body">
-          <div class="cube-title">Матовое MSD</div>
-          <div class="cube-price">500 ₽ / м²</div>
-        </div>
+    <div id="grid-canvas" class="options-grid"></div>
+    <div class="preview-container">
+      <button class="slider-btn prev" onclick="slideImage('canvas', -1)">‹</button>
+      <img id="canvas-preview-img" src="" alt="" class="preview-big-img" onerror="this.style.display='none'">
+      <button class="slider-btn next" onclick="slideImage('canvas', 1)">›</button>
+      <div class="preview-content">
+        <div id="canvas-info-title" class="preview-title"></div>
+        <div id="canvas-info-desc" class="preview-desc"></div>
       </div>
-
-      <!-- Кубик 2 -->
-      <div class="option-cube" onclick="selectOption('canvas', this, 700, 'Сатиновое / Глянцевое', 'Гладкая фактура с легким отражением света. Отлично визуально расширяет пространство.')">
-        <img src="canvas2.jpg" alt="" class="cube-img" onerror="this.style.display='none'">
-        <div class="cube-body">
-          <div class="cube-title">Сатиновое / Глянцевое</div>
-          <div class="cube-price">700 ₽ / м²</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Инфо-блок выбранного полотна -->
-    <div class="info-box">
-      <div id="canvas-info-title" class="info-box-title">Матовое MSD</div>
-      <div id="canvas-info-desc" class="info-box-desc">Классическое матовое покрытие без бликов. Выглядит как идеально ровная оштукатуренная стена.</div>
     </div>
   </div>
 
   <!-- Вкладка 3: Примыкание -->
   <div id="tab-profile" class="tab-content">
     <div class="section-title">Тип примыкания профиля</div>
-
-    <div class="options-grid">
-      <!-- Кубик 1 -->
-<div class="option-cube selected" onclick="selectOption('profile', this, 0, 'Стандартное (с лентой)', 'Классический профиль по периметру с маскировочной лентой-заглушкой.')">
-        <img src="bagetplastik.jpg" alt="" class="cube-img" onerror="this.style.display='none'">
-        <div class="cube-body">
-          <div class="cube-title">Стандартное (с лентой)</div>
-          <div class="cube-price">0 ₽</div>
-        </div>
+    <div id="grid-profile" class="options-grid"></div>
+    <div class="preview-container">
+      <button class="slider-btn prev" onclick="slideImage('profile', -1)">‹</button>
+      <img id="profile-preview-img" src="" alt="" class="preview-big-img" onerror="this.style.display='none'">
+      <button class="slider-btn next" onclick="slideImage('profile', 1)">›</button>
+      <div class="preview-content">
+        <div id="profile-info-title" class="preview-title"></div>
+        <div id="profile-info-desc" class="preview-desc"></div>
       </div>
-
-      <!-- Кубик 2 -->
-      <div class="option-cube" onclick="selectOption('profile', this, 1200, 'Теневое (EuroKRAAB)', 'Стильный ровный зазор 6 мм вдоль стены. Создается эффект парящего в воздухе потолка.')">
-        <img src="profile2.jpg" alt="" class="cube-img" onerror="this.style.display='none'">
-        <div class="cube-body">
-          <div class="cube-title">Теневое (EuroKRAAB)</div>
-          <div class="cube-price">1200 ₽</div>
-        </div>
-      </div>
-      
-      <!-- Сюда можешь легко докидывать еще кубики (скопировав блок выше) -->
-    </div>
-
-    <!-- Инфо-блок выбранного примыкания -->
-    <div class="info-box">
-      <div id="profile-info-title" class="info-box-title">Стандартное (с лентой)</div>
-      <div id="profile-info-desc" class="info-box-desc">Классический профиль по периметру с маскировочной лентой-заглушкой.</div>
     </div>
   </div>
 
   <!-- Вкладка 4: Карнизы -->
   <div id="tab-curtains" class="tab-content">
-    <div class="section-title">Гардины и карнизы</div>
-
-    <div class="options-grid">
-      <!-- Кубик 1 -->
-      <div class="option-cube selected" onclick="selectOption('curtains', this, 0, 'Без карниза', 'Установка скрытых или накладных ниш для штор не требуется.')">
-        <img src="curtain1.jpg" alt="" class="cube-img" onerror="this.style.display='none'">
-        <div class="cube-body">
-          <div class="cube-title">Без карниза</div>
-          <div class="cube-price">0 ₽</div>
-        </div>
-      </div>
-
-      <!-- Кубик 2 -->
-      <div class="option-cube" onclick="selectOption('curtains', this, 2500, 'Скрытый карниз ПК-15', 'Утопленная в потолок специальная алюминиевая ниша. Шторы свисают прямо из потолка.')">
-        <img src="curtain2.jpg" alt="" class="cube-img" onerror="this.style.display='none'">
-        <div class="cube-body">
-          <div class="cube-title">Скрытый карниз ПК-15</div>
-          <div class="cube-price">2500 ₽</div>
-        </div>
+    <div class="section-title">Карнизы</div>
+    <div id="grid-curtains" class="options-grid"></div>
+    <div class="preview-container">
+      <button class="slider-btn prev" onclick="slideImage('curtains', -1)">‹</button>
+      <img id="curtains-preview-img" src="" alt="" class="preview-big-img" onerror="this.style.display='none'">
+      <button class="slider-btn next" onclick="slideImage('curtains', 1)">›</button>
+      <div class="preview-content">
+        <div id="curtains-info-title" class="preview-title"></div>
+        <div id="curtains-info-desc" class="preview-desc"></div>
       </div>
     </div>
+  </div>
 
-    <!-- Инфо-блок выбранного карниза -->
-    <div class="info-box">
-      <div id="curtains-info-title" class="info-box-title">Без карниза</div>
-      <div id="curtains-info-desc" class="info-box-desc">Установка скрытых или накладных ниш для штор не требуется.</div>
+  <!-- Вкладка 5: Световые решения -->
+  <div id="tab-lighting" class="tab-content">
+    <div class="section-title">Световые решения</div>
+    <div id="grid-lighting" class="options-grid"></div>
+    <div class="preview-container">
+      <button class="slider-btn prev" onclick="slideImage('svetline2.jpg', -1)">‹</button>
+      <img id="lighting-preview-img" src="" alt="" class="preview-big-img" onerror="this.style.display='none'">
+      <button class="slider-btn next" onclick="slideImage('svetline3.jpg', 1)">›</button>
+      <div class="preview-content">
+        <div id="lighting-info-title" class="preview-title"></div>
+        <div id="lighting-info-desc" class="preview-desc"></div>
+      </div>
     </div>
   </div>
 
@@ -362,48 +362,184 @@
   </div>
 
   <script>
+    // ==========================================
+    // ЗДЕСЬ ТЫ МОЖЕШЬ ЛЕГКО ДОБАВЛЯТЬ И МЕНЯТЬ ДАННЫЕ
+    // ==========================================
+    var catalog = {
+      canvas: [
+        {
+          title: "Матовое MSD",
+          price: 500,
+          priceType: "м2", // "м2" умножается на площадь, "fixed" — фиксированная цена
+          desc: "Классическое матовое покрытие без бликов. Выглядит как идеально ровная оштукатуренная стена.",
+          images: ["canvas1.jpg", "canvas2.jpg"]
+        },
+        {
+          title: "Сатиновое / Глянцевое",
+          price: 700,
+          priceType: "м2",
+          desc: "Гладкая фактура с легким отражением света. Отлично визуально расширяет пространство.",
+          images: ["canvas2.jpg", "canvas1.jpg"]
+        }
+      ],
+      profile: [
+        {
+          title: "Классический ПВХ профиль",
+          price: 0,
+          priceType: "fixed",
+          desc: "Классический ПВХ профиль по периметру с декоративной вставкой, черного или белого цвета.",
+          images: ["bagetplastik.jpg", "bagetplastik2.jpeg"]
+        },
+        {
+          title: "Теневое (EuroKRAAB)",
+          price: 1200,
+          priceType: "fixed",
+          desc: "Стильный ровный зазор 6 мм вдоль стены. Создается эффект парящего в воздухе потолка.",
+          images: ["profile2.jpg", "bagetplastik.jpg"]
+        }
+      ],
+      curtains: [
+        {
+          title: "Без карниза",
+          price: 0,
+          priceType: "fixed",
+          desc: "Установка скрытых или накладных ниш для штор не требуется.",
+          images: ["curtain1.jpg", "curtain2.jpg"]
+        }
+      ],
+      lighting: [
+        {
+          title: "Световая линия Flexy White",
+          price: 3900,
+          priceType: "fixed",
+          desc: "Отличное дополнение к интерьеру, подходит в качестве основного освещения.",
+          images: ["svetlinewhite2.jpg", "svetlinewhite3.jpg"]
+        },
+        {
+          title: "Световая линия Flexy Black",
+          price: 3900,
+          priceType: "fixed",
+          desc: "Световая линия с черным рассеивателем для стильных современных интерьеров.",
+          images: ["svetline2.jpg", "svetline3.jpg"]
+        }
+      ]
+    };
+
     var tg = window.Telegram ? window.Telegram.WebApp : null;
     if (tg && tg.expand) { tg.expand(); }
 
-    var selectedPrices = { canvas: 500, profile: 0, curtains: 0 };
-    var selectedTitles = {
-      canvas: "Матовое MSD",
-      profile: "Стандартное (с лентой)",
-      curtains: "Без карниза"
+    var selected = {
+      canvas: { index: 0, price: catalog.canvas[0].price, type: catalog.canvas[0].priceType, title: catalog.canvas[0].title },
+      profile: { index: 0, price: catalog.profile[0].price, type: catalog.profile[0].priceType, title: catalog.profile[0].title },
+      curtains: { index: 0, price: catalog.curtains[0].price, type: catalog.curtains[0].priceType, title: catalog.curtains[0].title },
+      lighting: { index: 0, price: catalog.lighting[0].price, type: catalog.lighting[0].priceType, title: catalog.lighting[0].title }
     };
+
+    var activeImageIndex = { canvas: 0, profile: 0, curtains: 0, lighting: 0 };
+
+    function initCatalog() {
+      for (var cat in catalog) {
+        renderCategory(cat);
+        updatePreview(cat, 0);
+      }
+      calculateTotal();
+    }
+
+    function renderCategory(category) {
+      var grid = document.getElementById('grid-' + category);
+      if (!grid) return;
+      
+      grid.innerHTML = '';
+      var items = catalog[category];
+
+      for (var i = 0; i < items.length; i++) {
+        var item = items[i];
+        var isSelected = (i === 0) ? 'selected' : '';
+        var priceText = item.price.toLocaleString('ru-RU') + ' ₽' + (item.priceType === 'м2' ? ' / м²' : '');
+
+        var cube = document.createElement('div');
+        cube.className = 'option-cube ' + isSelected;
+        cube.setAttribute('onclick', "selectItem('" + category + "', " + i + ", this)");
+        cube.innerHTML = 
+          '<img src="' + item.images[0] + '" alt="" class="cube-img" onerror="this.style.display=\'none\'">' +
+          '<div class="cube-body">' +
+            '<div class="cube-title">' + item.title + '</div>' +
+            '<div class="cube-price">' + priceText + '</div>' +
+          '</div>';
+        grid.appendChild(cube);
+      }
+    }
+
+    function selectItem(category, index, cubeElement) {
+      var cubes = cubeElement.parentElement.querySelectorAll('.option-cube');
+      for (var i = 0; i < cubes.length; i++) { cubes[i].classList.remove('selected'); }
+      cubeElement.classList.add('selected');
+
+      var item = catalog[category][index];
+      selected[category] = {
+        index: index,
+        price: item.price,
+        type: item.priceType,
+        title: item.title
+      };
+      activeImageIndex[category] = 0;
+
+      updatePreview(category, index);
+      calculateTotal();
+    }
+
+    function updatePreview(category, itemIndex) {
+      var item = catalog[category][itemIndex];
+      var imgIndex = activeImageIndex[category];
+
+      document.getElementById(category + '-info-title').innerText = item.title;
+      document.getElementById(category + '-info-desc').innerText = item.desc;
+      
+      var bigImg = document.getElementById(category + '-preview-img');
+      if (bigImg && item.images.length > 0) {
+        bigImg.src = item.images[imgIndex] || item.images[0];
+        bigImg.style.display = 'block';
+      }
+    }
+
+    function slideImage(category, direction) {
+      var itemIndex = selected[category].index;
+      var images = catalog[category][itemIndex].images;
+      if (!images || images.length === 0) return;
+
+      activeImageIndex[category] += direction;
+      if (activeImageIndex[category] >= images.length) {
+        activeImageIndex[category] = 0;
+      } else if (activeImageIndex[category] < 0) {
+        activeImageIndex[category] = images.length - 1;
+      }
+
+      updatePreview(category, itemIndex);
+    }
 
     function switchTab(tabId, btnElement) {
       var contents = document.querySelectorAll('.tab-content');
       for (var i = 0; i < contents.length; i++) { contents[i].classList.remove('active'); }
       var btns = document.querySelectorAll('.tab-btn');
       for (var i = 0; i < btns.length; i++) { btns[i].classList.remove('active'); }
+      
       document.getElementById(tabId).classList.add('active');
       btnElement.classList.add('active');
     }
 
-    function selectOption(category, cubeElement, price, title, desc) {
-      // Снимаем выделение со всех кубиков в этой вкладке
-var cubes = cubeElement.parentElement.querySelectorAll('.option-cube');
-      for (var i = 0; i < cubes.length; i++) { cubes[i].classList.remove('selected'); }
-      
-      // Выделяем нажатый кубик
-      cubeElement.classList.add('selected');
-      
-      selectedPrices[category] = price;
-      selectedTitles[category] = title;
-
-      // Обновляем текст в информационном блоке снизу
-      document.getElementById(category + '-info-title').innerText = title;
-      document.getElementById(category + '-info-desc').innerText = desc;
-
-      calculateTotal();
-    }
-
     function calculateTotal() {
-      var areaInput = document.getElementById('area-input').value;
-      var area = parseFloat(areaInput) || 0;
-      var canvasCost = area * selectedPrices.canvas;
-      var total = canvasCost + selectedPrices.profile + selectedPrices.curtains;
+      var area = parseFloat(document.getElementById('area-input').value) || 0;
+      var total = 0;
+
+      for (var cat in selected) {
+        var s = selected[cat];
+        if (s.type === 'м2') {
+          total += area * s.price;
+        } else {
+          total += s.price;
+        }
+      }
+
       var pricePerM2 = area > 0 ? Math.round(total / area) : 0;
       document.getElementById('total-price-val').innerText = total.toLocaleString('ru-RU') + ' ₽';
       document.getElementById('price-per-m2-val').innerText = pricePerM2.toLocaleString('ru-RU') + ' ₽ за м²';
@@ -414,9 +550,10 @@ var cubes = cubeElement.parentElement.querySelectorAll('.option-cube');
       var totalPrice = document.getElementById('total-price-val').innerText;
       var orderData = {
         area: area + ' м²',
-        canvas: selectedTitles.canvas,
-        profile: selectedTitles.profile,
-        curtains: selectedTitles.curtains,
+        canvas: selected.canvas.title,
+        profile: selected.profile.title,
+        curtains: selected.curtains.title,
+        lighting: selected.lighting.title,
         totalPrice: totalPrice
       };
       if (tg && tg.sendData) {
@@ -425,7 +562,8 @@ var cubes = cubeElement.parentElement.querySelectorAll('.option-cube');
         alert("Заявка сформирована!\n\n" + JSON.stringify(orderData, null, 2));
       }
     }
-    calculateTotal();
+
+    initCatalog();
   </script>
 </body>
 </html>
