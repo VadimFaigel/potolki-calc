@@ -1,567 +1,968 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
- <title>Калькулятор потолков</title>
- <script src="https://telegram.org/js/telegram-web-app.js"></script>
- <style>
-   :root {
-     --bg-color: #121212;
-     --card-bg: #1e1e1e;
-     --card-border: #2a2a2a;
-     --accent-color: #d49a51;
-     --accent-soft: rgba(212, 154, 81, 0.15);
-     --text-main: #ffffff;
-     --text-muted: #8e8e93;
-   }
-   * {
-     box-sizing: border-box;
-     margin: 0;
-     padding: 0;
-     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-     -webkit-tap-highlight-color: transparent;
-   }
-   body {
-     background-color: var(--bg-color);
-     color: var(--text-main);
-     padding-bottom: 110px;
-   }
-   .tabs-header {
-     display: flex;
-     overflow-x: auto;
-     background-color: var(--card-bg);
-     border-bottom: 1px solid var(--card-border);
-     position: sticky;
-     top: 0;
-     z-index: 10;
-     scrollbar-width: none;
-   }
-   .tabs-header::-webkit-scrollbar { display: none; }
-   .tab-btn {
-     flex: 1 0 auto;
-     padding: 14px 16px;
-     background: none;
-     border: none;
-     color: var(--text-muted);
-     font-size: 13px;
-     font-weight: 600;
-     text-transform: uppercase;
-     letter-spacing: 0.5px;
-     cursor: pointer;
-     border-bottom: 2px solid transparent;
-     transition: all 0.2s ease;
-     text-align: center;
-   }
-   .tab-btn.active {
-     color: var(--accent-color);
-     border-bottom-color: var(--accent-color);
-   }
-   .tab-content {
-     display: none;
-     padding: 16px;
-   }
-   .tab-content.active { display: block; }
-   .section-title {
-     font-size: 12px;
-     color: var(--text-muted);
-     text-transform: uppercase;
-     letter-spacing: 0.8px;
-     margin-bottom: 12px;
-   }
-   .input-group {
-     background: var(--card-bg);
-     border: 1px solid var(--card-border);
-     border-radius: 12px;
-     padding: 16px;
-     display: flex;
-     align-items: center;
-     justify-content: space-between;
-     gap: 12px;
-   }
-   .input-group label {
-     font-size: 15px;
-     font-weight: 500;
-   }
-   .input-wrapper {
-     display: flex;
-     align-items: center;
-     gap: 8px;
-   }
-   .input-wrapper input {
-     width: 100px;
-     background: #2a2a2a;
-     border: 1px solid #3a3a3a;
-     border-radius: 8px;
-     color: #fff;
-     font-size: 18px;
-     font-weight: 600;
-     padding: 8px 12px;
-     text-align: right;
-     outline: none;
-   }
-   .input-wrapper input:focus {
-     border-color: var(--accent-color);
-   }
-   /* СЕТКА КУБИКОВ */
-   .options-grid {
-     display: grid;
-     grid-template-columns: repeat(2, 1fr);
-     gap: 12px;
-     margin-bottom: 16px;
-   }
-   .option-cube {
-     background: var(--card-bg);
-     border: 2px solid var(--card-border);
-     border-radius: 12px;
-     overflow: hidden;
-     cursor: pointer;
-     transition: all 0.2s ease;
-     display: flex;
-     flex-direction: column;
-   }
-   .option-cube.selected {
-     border-color: var(--accent-color);
-     background: var(--accent-soft);
-   }
-   .cube-img {
-     width: 100%;
-     height: 90px;
-     object-fit: cover;
-     background-color: #252525;
-   }
-   .cube-body {
-     padding: 10px;
-     display: flex;
-     flex-direction: column;
-     flex-grow: 1;
-     justify-content: space-between;
-     gap: 4px;
-   }
-   .cube-title {
-     font-size: 12px;
-     font-weight: 600;
-     color: var(--text-main);
-     line-height: 1.2;
-   }
-   .cube-price {
-     font-size: 12px;
-     font-weight: 700;
-     color: var(--accent-color);
-   }
-   /* БОЛЬШОЙ БЛОК ПРЕВЬЮ СО СТРЕЛОЧКАМИ */
-   .preview-container {
-     background: var(--card-bg);
-     border: 1px solid var(--card-border);
-     border-radius: 12px;
-     overflow: hidden;
-     margin-top: 12px;
-     position: relative;
-   }
-   .preview-big-img {
-     width: 100%;
-     height: 180px;
-     object-fit: cover;
-     background-color: #252525;
-     display: block;
-   }
-   .slider-btn {
-     position: absolute;
-     top: 75px;
-     background: rgba(0, 0, 0, 0.6);
-     color: #fff;
-     border: none;
-     border-radius: 50%;
-     width: 32px;
-     height: 32px;
-     cursor: pointer;
-     font-size: 16px;
-     z-index: 2;
-     display: flex;
-     align-items: center;
-     justify-content: center;
-   }
-   .slider-btn.prev { left: 10px; }
-   .slider-btn.next { right: 10px; }
-   .preview-content {
-     padding: 14px;
-   }
-   .preview-title {
-     font-size: 15px;
-     font-weight: 700;
-     color: var(--accent-color);
-     margin-bottom: 6px;
-   }
-   .preview-desc {
-     font-size: 13px;
-     color: var(--text-muted);
-     line-height: 1.4;
-   }
-   /* Нижняя панель */
-   .bottom-bar {
-     position: fixed;
-     bottom: 0;
-     left: 0;
-     right: 0;
-     background: rgba(18, 18, 18, 0.95);
-     backdrop-filter: blur(10px);
-     border-top: 1px solid var(--card-border);
-     padding: 12px 16px 20px 16px;
-     display: flex;
-     align-items: center;
-     justify-content: space-between;
-     z-index: 100;
-   }
-   .total-info .total-title {
-     font-size: 11px;
-     color: var(--text-muted);
-     text-transform: uppercase;
-     letter-spacing: 0.5px;
-   }
-   .total-info .total-price {
-     font-size: 22px;
-     font-weight: 800;
-     color: #fff;
-   }
-   .total-info .price-per-m2 {
-     font-size: 12px;
-     color: var(--text-muted);
-   }
-   .btn-submit {
-     background: var(--accent-color);
-     color: #000;
-     border: none;
-     border-radius: 10px;
-     padding: 14px 20px;
-     font-size: 15px;
-     font-weight: 700;
-     cursor: pointer;
-   }
- </style>
-</head>
-<body>
- <!-- Шапка вкладок -->
- <div class="tabs-header">
-   <button class="tab-btn active" onclick="switchTab('tab-size', this)">1. Размер</button>
-   <button class="tab-btn" onclick="switchTab('tab-canvas', this)">2. Полотно</button>
-   <button class="tab-btn" onclick="switchTab('tab-profile', this)">3. Примыкание</button>
-   <button class="tab-btn" onclick="switchTab('tab-curtains', this)">4. Карнизы</button>
-   <button class="tab-btn" onclick="switchTab('tab-lighting', this)">5. Световые решения</button>
- </div>
- <!-- Вкладка 1: Площадь -->
- <div id="tab-size" class="tab-content active">
-   <div class="section-title">Параметры помещения</div>
-   <div class="input-group">
-     <label for="area-input">Площадь помещения:</label>
-     <div class="input-wrapper">
-       <input type="number" id="area-input" value="15" min="1" oninput="calculateTotal()">
-       <span style="color: var(--text-muted)">м²</span>
-     </div>
-   </div>
- </div>
- <!-- Вкладка 2: Полотно -->
- <div id="tab-canvas" class="tab-content">
-   <div class="section-title">Выберите тип полотна</div>
-   <div id="grid-canvas" class="options-grid"></div>
-   <div class="preview-container">
-     <button class="slider-btn prev" onclick="slideImage('canvas', -1)">‹</button>
-     <img id="canvas-preview-img" src="" alt="" class="preview-big-img" onerror="this.style.display='none'">
-     <button class="slider-btn next" onclick="slideImage('canvas', 1)">›</button>
-     <div class="preview-content">
-       <div id="canvas-info-title" class="preview-title"></div>
-       <div id="canvas-info-desc" class="preview-desc"></div>
-     </div>
-   </div>
- </div>
- <!-- Вкладка 3: Примыкание -->
- <div id="tab-profile" class="tab-content">
-   <div class="section-title">Тип примыкания профиля</div>
-   <div id="grid-profile" class="options-grid"></div>
-   <div class="preview-container">
-     <button class="slider-btn prev" onclick="slideImage('profile', -1)">‹</button>
-     <img id="profile-preview-img" src="" alt="" class="preview-big-img" onerror="this.style.display='none'">
-     <button class="slider-btn next" onclick="slideImage('profile', 1)">›</button>
-     <div class="preview-content">
-       <div id="profile-info-title" class="preview-title"></div>
-       <div id="profile-info-desc" class="preview-desc"></div>
-     </div>
-   </div>
- </div>
- <!-- Вкладка 4: Карнизы -->
- <div id="tab-curtains" class="tab-content">
-   <div class="section-title">Карнизы</div>
-   <div id="grid-curtains" class="options-grid"></div>
-   <div class="preview-container">
-     <button class="slider-btn prev" onclick="slideImage('curtains', -1)">‹</button>
-     <img id="curtains-preview-img" src="" alt="" class="preview-big-img" onerror="this.style.display='none'">
-     <button class="slider-btn next" onclick="slideImage('curtains', 1)">›</button>
-     <div class="preview-content">
-       <div id="curtains-info-title" class="preview-title"></div>
-       <div id="curtains-info-desc" class="preview-desc"></div>
-     </div>
-   </div>
- </div>
- <!-- Вкладка 5: Световые решения -->
- <div id="tab-lighting" class="tab-content">
-   <div class="section-title">Световые решения</div>
-   <div id="grid-lighting" class="options-grid"></div>
-   <div class="preview-container">
-     <button class="slider-btn prev" onclick="slideImage('lighting', -1)">‹</button>
-     <img id="lighting-preview-img" src="" alt="" class="preview-big-img" onerror="this.style.display='none'">
-     <button class="slider-btn next" onclick="slideImage('lighting', 1)">›</button>
-     <div class="preview-content">
-       <div id="lighting-info-title" class="preview-title"></div>
-       <div id="lighting-info-desc" class="preview-desc"></div>
-     </div>
-   </div>
- </div>
- <!-- Нижняя панель -->
- <div class="bottom-bar">
-   <div class="total-info">
-     <div class="total-title">Итого:</div>
-     <div class="total-price" id="total-price-val">0 ₽</div>
-     <div class="price-per-m2" id="price-per-m2-val">0 ₽ за м²</div>
-   </div>
-   <button class="btn-submit" onclick="sendData()">Оставить заявку</button>
- </div>
- <script>
-   // ==========================================
-   // ЗДЕСЬ ТЫ МОЖЕШЬ ЛЕГКО ДОБАВЛЯТЬ И МЕНЯТЬ ДАННЫЕ
-   // ==========================================
-   var catalog = {
-     canvas: [
-       {
-         title: "Матовое",
-         price: 500,
-         priceType: "м2", // "м2" умножается на площадь, "fixed" — фиксированная цена
-         desc: "Классическое матовое покрытие без бликов. Выглядит как идеально ровная оштукатуренная стена.",
-         images: ["mat.jpg"]
-       },
-       {
-         title: "Глянцевое",
-         price: 700,
-         priceType: "м2",
-         desc: "Гладкая фактура с легким отражением света. Отлично визуально расширяет пространство.",
-         images: ["glyanec.jpg"]
-       }
-     ],
-     profile: [
-       {
-         title: "Классическое примыкание",
-         price: 0,
-         priceType: "fixed",
-         desc: "Классический ПВХ/Алюминиевый профиль по периметру с декоративной вставкой, черного или белого цвета.",
-         images: ["bagetal3.jpg", "bagetal2.jpg", "bagetplastik2.jpg"]
-       },
-       {
-         title: "Теневое примыкание (EuroKRAAB)",
-         price: 1200,
-         priceType: "fixed",
-         desc: "Стильный ровный зазор 6 мм вдоль стены. Создается эффект парящего в воздухе потолка.",
-         images: ["eurokraab2.jpg", "eurokraab1.jpg"]
-       },
-       {
-         title: "Теневое примыкание (Bizon)",
-         price: 1200,
-         priceType: "fixed",
-         desc: "Стильный ровный зазор 6 мм вдоль стены. Создается эффект парящего в воздухе потолка.",
-         images: ["bizon1.jpg"]
-       },
-       {
-         title: "Парящее примыкание (Contour Pro Led Black)",
-         price: 1200,
-         priceType: "fixed",
-         desc: "Стильный ровный зазор 6 мм вдоль стены. Создается эффект парящего в воздухе потолка.",
-         images: ["contourproledblack2.jpg", "contourproledblack3.jpg", "contourproledblack4.jpg"]
-       },
-       {
-         title: "Парящее примыкание (Contour Pro Led White)",
-         price: 1200,
-         priceType: "fixed",
-         desc: "Стильный ровный зазор 6 мм вдоль стены. Создается эффект парящего в воздухе потолка.",
-         images: ["contourproledwhite2.jpg", "contourproledwhite3.jpg"]
-       }
-     ],
-     curtains: [
-       {
-         title: "Скрытый однорядный карниз АМ1 Black",
-         price: 0,
-         priceType: "fixed",
-         desc: "информация.",
-         images: ["gardinablack5.jpg", "am1black1.jpg", "gardinablack3.jpg"]
-       },
-       {
-         title: "Скрытый однорядный карниз АМ1 White",
-         price: 1500,
-         priceType: "fixed",
-         desc: "описание",
-         images: ["gardina2.jpg", "am1white.jpg"]
-       },
-       {
-         title: "Скрытый карниз Borzz Karniz 45 Black",
-         price: 1500,
-         priceType: "fixed",
-         desc: "описание",
-         images: ["gborzzblack1.jpg", "gborzzblack2.jpg","gborzzblack3.jpg" ]
-       },
-       {
-         title: "Скрытый карниз Borzz Karniz 45 White",
-         price: 2000,
-         priceType: "fixed",
-         desc: "описание",
-         images: ["gborzzwhite1.jpg", "gborzzwhite2.jpg", "gborzzwhite3.jpg"]
-       },
-       {
-         title: "Скрытый карниз Borzz Karniz P45 Black",
-         price: 1500,
-         priceType: "fixed",
-         desc: "описание",
-         images: ["pborzzblack1.jpg", "pborzzblack2.jpg", "pborzzblack3.jpg"]
-       },
-       {
-         title: "Скрытый карниз Borzz Karniz P45 White",
-         price: 2000,
-         priceType: "fixed",
-         desc: "описание",
-         images: ["pborzzwhite1.jpg", "pborzzwhite2.jpg"]
-       }
-     ],
-     lighting: [
-       {
-         title: "Световая линия Flexy White",
-         price: 3900,
-         priceType: "fixed",
-         desc: "Отличное дополнение к интерьеру, подходит в качестве основного освещения.",
-         images: ["svetlinewhite2.jpg", "svetlinewhite3.jpg"]
-       },
-       {
-         title: "Световая линия Flexy Black",
-         price: 3900,
-         priceType: "fixed",
-         desc: "Световая линия с черным рассеивателем для стильных современных интерьеров.",
-         images: ["svetline2.jpg", "svetline3.jpg"]
-       }
-     ]
-   };
-   var tg = window.Telegram ? window.Telegram.WebApp : null;
-   if (tg && tg.expand) { tg.expand(); }
-   var selected = {
-     canvas: { index: 0, price: catalog.canvas[0].price, type: catalog.canvas[0].priceType, title: catalog.canvas[0].title },
-     profile: { index: 0, price: catalog.profile[0].price, type: catalog.profile[0].priceType, title: catalog.profile[0].title },
-     curtains: { index: 0, price: catalog.curtains[0].price, type: catalog.curtains[0].priceType, title: catalog.curtains[0].title },
-     lighting: { index: 0, price: catalog.lighting[0].price, type: catalog.lighting[0].priceType, title: catalog.lighting[0].title }
-   };
-   var activeImageIndex = { canvas: 0, profile: 0, curtains: 0, lighting: 0 };
-   function initCatalog() {
-     for (var cat in catalog) {
-       renderCategory(cat);
-       updatePreview(cat, 0);
-     }
-     calculateTotal();
-   }
-   function renderCategory(category) {
-     var grid = document.getElementById('grid-' + category);
-     if (!grid) return;
-     
-     grid.innerHTML = '';
-     var items = catalog[category];
-     for (var i = 0; i < items.length; i++) {
-       var item = items[i];
-       var isSelected = (i === 0) ? 'selected' : '';
-       var priceText = item.price.toLocaleString('ru-RU') + ' ₽' + (item.priceType === 'м2' ? ' / м²' : '');
-       var cube = document.createElement('div');
-       cube.className = 'option-cube ' + isSelected;
-       cube.setAttribute('onclick', "selectItem('" + category + "', " + i + ", this)");
-       cube.innerHTML =  
-         '<img src="' + item.images[0] + '" alt="" class="cube-img" onerror="this.style.display=\'none\'">' +
-         '<div class="cube-body">' +
-           '<div class="cube-title">' + item.title + '</div>' +
-           '<div class="cube-price">' + priceText + '</div>' +
-         '</div>';
-       grid.appendChild(cube);
-     }
-   }
-   function selectItem(category, index, cubeElement) {
-     var cubes = cubeElement.parentElement.querySelectorAll('.option-cube');
-     for (var i = 0; i < cubes.length; i++) { cubes[i].classList.remove('selected'); }
-     cubeElement.classList.add('selected');
-     var item = catalog[category][index];
-     selected[category] = {
-       index: index,
-       price: item.price,
-       type: item.priceType,
-       title: item.title
-     };
-     activeImageIndex[category] = 0;
-     updatePreview(category, index);
-     calculateTotal();
-   }
-   function updatePreview(category, itemIndex) {
-     var item = catalog[category][itemIndex];
-     var imgIndex = activeImageIndex[category];
-     document.getElementById(category + '-info-title').innerText = item.title;
-     document.getElementById(category + '-info-desc').innerText = item.desc;
-     
-     var bigImg = document.getElementById(category + '-preview-img');
-     if (bigImg && item.images.length > 0) {
-       bigImg.src = item.images[imgIndex] || item.images[0];
-       bigImg.style.display = 'block';
-     }
-   }
-   function slideImage(category, direction) {
-     var itemIndex = selected[category].index;
-     var images = catalog[category][itemIndex].images;
-     if (!images || images.length === 0) return;
-     activeImageIndex[category] += direction;
-     if (activeImageIndex[category] >= images.length) {
-       activeImageIndex[category] = 0;
-     } else if (activeImageIndex[category] < 0) {
-       activeImageIndex[category] = images.length - 1;
-     }
-     updatePreview(category, itemIndex);
-   }
-   function switchTab(tabId, btnElement) {
-     var contents = document.querySelectorAll('.tab-content');
-     for (var i = 0; i < contents.length; i++) { contents[i].classList.remove('active'); }
-     var btns = document.querySelectorAll('.tab-btn');
-     for (var i = 0; i < btns.length; i++) { btns[i].classList.remove('active'); }
-     
-     document.getElementById(tabId).classList.add('active');
-     btnElement.classList.add('active');
-   }
-   function calculateTotal() {
-     var area = parseFloat(document.getElementById('area-input').value) || 0;
-     var total = 0;
-     for (var cat in selected) {
-       var s = selected[cat];
-       if (s.type === 'м2') {
-         total += area * s.price;
-       } else {
-         total += s.price;
-       }
-     }
-     var pricePerM2 = area > 0 ? Math.round(total / area) : 0;
-     document.getElementById('total-price-val').innerText = total.toLocaleString('ru-RU') + ' ₽';
-     document.getElementById('price-per-m2-val').innerText = pricePerM2.toLocaleString('ru-RU') + ' ₽ за м²';
-   }
-   function sendData() {
-     var area = document.getElementById('area-input').value;
-     var totalPrice = document.getElementById('total-price-val').innerText;
-     var orderData = {
-       area: area + ' м²',
-       canvas: selected.canvas.title,
-       profile: selected.profile.title,
-       curtains: selected.curtains.title,
-       lighting: selected.lighting.title,
-       totalPrice: totalPrice
-     };
-     if (tg && tg.sendData) {
-       tg.sendData(JSON.stringify(orderData));
-     } else {
-       alert("Заявка сформирована!\n\n" + JSON.stringify(orderData, null, 2));
-     }
-   }
-   initCatalog();
- </script>
-</body>
-</html>
+<!DOCTYPE html> 
+<html lang="ru"> 
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
+    <title>Калькулятор потолков</title> 
+    <script src="https://telegram.org/js/telegram-web-app.js"></script> 
+    <style> 
+        :root {
+    
+          --bg-color: #121212;
+    
+          --card-bg: #1e1e1e;
+    
+          --card-border: #2a2a2a;
+    
+          --accent-color: #d49a51;
+    
+          --accent-soft: rgba(212, 154, 81, 0.15);
+    
+          --text-main: #ffffff;
+    
+          --text-muted: #8e8e93;
+    
+        }
+    
+    
+    
+        * {
+    
+          box-sizing: border-box;
+    
+          margin: 0;
+    
+          padding: 0;
+    
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    
+          -webkit-tap-highlight-color: transparent;
+    
+        }
+    
+    
+    
+        body {
+    
+          background-color: var(--bg-color);
+    
+          color: var(--text-main);
+    
+          padding-bottom: 110px;
+    
+        }
+    
+    
+    
+        /* Навигация */
+    
+        .tabs-header {
+    
+          display: flex;
+    
+          overflow-x: auto;
+    
+          background-color: var(--card-bg);
+    
+          border-bottom: 1px solid var(--card-border);
+    
+          position: sticky;
+    
+          top: 0;
+    
+          z-index: 10;
+    
+          scrollbar-width: none;
+    
+        }
+    
+        .tabs-header::-webkit-scrollbar { display: none; }
+    
+    
+    
+        .tab-btn {
+    
+          flex: 1 0 auto;
+    
+          padding: 14px 16px;
+    
+          background: none;
+    
+          border: none;
+    
+          color: var(--text-muted);
+    
+          font-size: 13px;
+    
+          font-weight: 600;
+    
+          text-transform: uppercase;
+    
+          letter-spacing: 0.5px;
+    
+          cursor: pointer;
+    
+          border-bottom: 2px solid transparent;
+    
+          transition: all 0.2s ease;
+    
+          text-align: center;
+    
+        }
+    
+    
+    
+        .tab-btn.active {
+    
+          color: var(--accent-color);
+    
+          border-bottom-color: var(--accent-color);
+    
+        }
+    
+    
+    
+        .tab-content {
+    
+          display: none;
+    
+          padding: 16px;
+    
+        }
+    
+        .tab-content.active { display: block; }
+    
+    
+    
+        .section-title {
+    
+          font-size: 12px;
+    
+          color: var(--text-muted);
+    
+          text-transform: uppercase;
+    
+          letter-spacing: 0.8px;
+    
+          margin-bottom: 12px;
+    
+        }
+    
+    
+    
+        /* Вкладка 1 */
+    
+        .input-group {
+    
+          background: var(--card-bg);
+    
+          border: 1px solid var(--card-border);
+    
+          border-radius: 12px;
+    
+          padding: 16px;
+    
+          display: flex;
+    
+          align-items: center;
+    
+          justify-content: space-between;
+    
+          gap: 12px;
+    
+        }
+    
+    
+    
+        .input-wrapper input {
+    
+          width: 100px;
+    
+          background: #2a2a2a;
+    
+          border: 1px solid #3a3a3a;
+    
+          border-radius: 8px;
+    
+          color: #fff;
+    
+          font-size: 18px;
+    
+          font-weight: 600;
+    
+          padding: 8px 12px;
+    
+          text-align: right;
+    
+          outline: none;
+    
+        }
+    
+    
+    
+        /* Сетка карточек */
+    
+        .options-grid {
+    
+          display: grid;
+    
+          grid-template-columns: repeat(2, 1fr);
+    
+          gap: 12px;
+    
+          margin-bottom: 16px;
+    
+        }
+    
+    
+    
+        .option-cube {
+    
+          background: var(--card-bg);
+    
+          border: 2px solid var(--card-border);
+    
+          border-radius: 12px;
+    
+          overflow: hidden;
+    
+          cursor: pointer;
+    
+          transition: all 0.2s ease;
+    
+          display: flex;
+    
+          flex-direction: column;
+    
+        }
+    
+    
+    
+        .option-cube.selected {
+    
+          border-color: var(--accent-color);
+    
+          background: var(--accent-soft);
+    
+        }
+    
+    
+    
+        .cube-img {
+    
+          width: 100%;
+    
+          height: 90px;
+    
+          object-fit: cover;
+    
+          background-color: #252525;
+    
+        }
+    
+    
+    
+        .cube-body {
+    
+          padding: 10px;
+    
+          display: flex;
+    
+          flex-direction: column;
+    
+          flex-grow: 1;
+    
+          justify-content: space-between;
+    
+          gap: 4px;
+    
+        }
+    
+    
+    
+        .cube-title {
+    
+          font-size: 12px;
+    
+          font-weight: 600;
+    
+          color: var(--text-main);
+    
+          line-height: 1.2;
+    
+        }
+    
+    
+    
+        .cube-price {
+    
+          font-size: 12px;
+    
+          font-weight: 700;
+    
+          color: var(--accent-color);
+    
+        }
+    
+    
+    
+        /* ВСПОМАТАТЕЛЬНОЕ ВСПЛЫВАЮЩЕЕ ОКНО ПО ЦЕНТРУ ЭКРАНА */
+    
+        .modal-overlay {
+    
+          position: fixed;
+    
+          top: 0;
+    
+          left: 0;
+    
+          width: 100vw;
+    
+          height: 100vh;
+    
+          background: rgba(0, 0, 0, 0.85);
+    
+          backdrop-filter: blur(5px);
+    
+          z-index: 1000;
+    
+          display: flex;
+    
+          align-items: center;
+    
+          justify-content: center;
+    
+          padding: 16px;
+    
+          opacity: 0;
+    
+          visibility: hidden;
+    
+          transition: opacity 0.25s ease, visibility 0.25s ease;
+    
+        }
+    
+    
+    
+        .modal-overlay.active {
+    
+          opacity: 1;
+    
+          visibility: visible;
+    
+        }
+    
+    
+    
+        .modal-card {
+    
+          background: var(--card-bg);
+    
+          border: 1px solid var(--card-border);
+    
+          border-radius: 16px;
+    
+          width: 100%;
+    
+          max-width: 400px;
+    
+          overflow: hidden;
+    
+          position: relative;
+    
+          transform: scale(0.9);
+    
+          transition: transform 0.25s ease;
+    
+          box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+    
+        }
+    
+    
+    
+        .modal-overlay.active .modal-card {
+    
+          transform: scale(1);
+    
+        }
+    
+    
+    
+        .modal-close-btn {
+    
+          position: absolute;
+    
+          top: 10px;
+    
+          right: 10px;
+    
+          background: rgba(0, 0, 0, 0.7);
+    
+          color: #fff;
+    
+          border: none;
+    
+          width: 32px;
+    
+          height: 32px;
+    
+          border-radius: 50%;
+    
+          font-size: 18px;
+    
+          cursor: pointer;
+    
+          z-index: 10;
+    
+          display: flex;
+    
+          align-items: center;
+    
+          justify-content: center;
+    
+        }
+    
+    
+    
+        .modal-slider {
+    
+          position: relative;
+    
+          width: 100%;
+    
+          height: 220px;
+    
+          background: #252525;
+    
+        }
+    
+    
+    
+        .modal-img {
+    
+          width: 100%;
+    
+          height: 100%;
+    
+          object-fit: cover;
+    
+          display: block;
+    
+        }
+    
+    
+    
+        .slider-btn {
+    
+          position: absolute;
+    
+          top: 50%;
+    
+          transform: translateY(-50%);
+    
+          background: rgba(0, 0, 0, 0.65);
+    
+          color: #fff;
+    
+          border: none;
+    
+          border-radius: 50%;
+    
+          width: 36px;
+    
+          height: 36px;
+    
+          cursor: pointer;
+    
+          font-size: 18px;
+    
+          z-index: 2;
+    
+          display: flex;
+    
+          align-items: center;
+    
+          justify-content: center;
+    
+        }
+    
+        .slider-btn.prev { left: 10px; }
+    
+        .slider-btn.next { right: 10px; }
+    
+    
+    
+        .modal-content {
+    
+          padding: 16px;
+    
+        }
+    
+    
+    
+        .modal-title {
+    
+          font-size: 16px;
+    
+          font-weight: 700;
+    
+          color: var(--accent-color);
+    
+          margin-bottom: 6px;
+    
+        }
+    
+    
+    
+        .modal-desc {
+    
+          font-size: 13px;
+    
+          color: var(--text-muted);
+    
+          line-height: 1.4;
+    
+        }
+    
+    
+    
+        /* Нижняя панель */
+    
+        .bottom-bar {
+    
+          position: fixed;
+    
+          bottom: 0;
+    
+          left: 0;
+    
+          right: 0;
+    
+          background: rgba(18, 18, 18, 0.95);
+    
+          backdrop-filter: blur(10px);
+    
+          border-top: 1px solid var(--card-border);
+    
+          padding: 12px 16px 20px 16px;
+    
+          display: flex;
+    
+          align-items: center;
+    
+          justify-content: space-between;
+    
+          z-index: 100;
+    
+        }
+    
+    
+    
+        .total-info .total-title {
+    
+          font-size: 11px;
+    
+          color: var(--text-muted);
+    
+          text-transform: uppercase;
+    
+        }
+    
+    
+    
+        .total-info .total-price {
+    
+          font-size: 22px;
+    
+          font-weight: 800;
+    
+          color: #fff;
+    
+        }
+    
+    
+    
+        .total-info .price-per-m2 {
+    
+          font-size: 12px;
+    
+          color: var(--text-muted);
+    
+        }
+    
+    
+    
+        .btn-submit {
+    
+          background: var(--accent-color);
+    
+          color: #000;
+    
+          border: none;
+    
+          border-radius: 10px;
+    
+          padding: 14px 20px;
+    
+          font-size: 15px;
+    
+          font-weight: 700;
+    
+          cursor: pointer;
+    
+        } 
+    </style> 
+</head> 
+<body> 
+
+<!-- Шапка вкладок --> 
+<div class="tabs-header"> 
+    <button class="tab-btn active" onclick="switchTab('tab-size', this)">1. Размер</button> 
+    <button class="tab-btn" onclick="switchTab('tab-canvas', this)">2. Полотно</button> 
+    <button class="tab-btn" onclick="switchTab('tab-profile', this)">3. Примыкание</button> 
+    <button class="tab-btn" onclick="switchTab('tab-curtains', this)">4. Карнизы</button> 
+    <button class="tab-btn" onclick="switchTab('tab-lighting', this)">5. Световые решения</button> 
+</div> 
+
+<!-- Вкладка 1: Площадь --> 
+<div id="tab-size" class="tab-content active"> 
+    <div class="section-title">Параметры помещения</div> 
+    <div class="input-group"> 
+        <label for="area-input">Площадь помещения:</label> 
+        <div class="input-wrapper"> 
+            <input type="number" id="area-input" value="15" min="1" oninput="calculateTotal()"> 
+            <span style="color: var(--text-muted)">м²</span> 
+        </div> 
+    </div> 
+</div> 
+
+<!-- Вкладка 2: Полотно --> 
+<div id="tab-canvas" class="tab-content"> 
+    <div class="section-title">Выберите тип полотна</div> 
+    <div id="grid-canvas" class="options-grid"></div> 
+</div> 
+
+<!-- Вкладка 3: Примыкание --> 
+<div id="tab-profile" class="tab-content"> 
+    <div class="section-title">Тип примыкания профиля</div> 
+    <div id="grid-profile" class="options-grid"></div> 
+</div> 
+
+<!-- Вкладка 4: Карнизы --> 
+<div id="tab-curtains" class="tab-content"> 
+    <div class="section-title">Карнизы</div> 
+    <div id="grid-curtains" class="options-grid"></div> 
+</div> 
+
+<!-- Вкладка 5: Световые решения --> 
+<div id="tab-lighting" class="tab-content"> 
+    <div class="section-title">Световые решения</div> 
+    <div id="grid-lighting" class="options-grid"></div> 
+</div> 
+
+<!-- ЕДИНСТВЕННОЕ ВСПЛЫВАЮЩЕЕ МОДАЛЬНОЕ ОКНО --> 
+<div id="modal-overlay" class="modal-overlay" onclick="closeModalOnOverlay(event)"> 
+    <div class="modal-card"> 
+        <button class="modal-close-btn" onclick="closeModal()">✕</button> 
+        <div class="modal-slider"> 
+            <button class="slider-btn prev" onclick="slideModalImage(-1)">‹</button> 
+            <img id="modal-img" src="" alt="" class="modal-img" onerror="this.style.display='none'"> 
+            <button class="slider-btn next" onclick="slideModalImage(1)">›</button> 
+        </div> 
+        <div class="modal-content"> 
+            <div id="modal-title" class="modal-title"></div> 
+            <div id="modal-desc" class="modal-desc"></div> 
+        </div> 
+    </div> 
+</div> 
+
+<!-- Нижняя панель --> 
+<div class="bottom-bar"> 
+    <div class="total-info"> 
+        <div class="total-title">Итого:</div> 
+        <div class="total-price" id="total-price-val">0 ₽</div> 
+        <div class="price-per-m2" id="price-per-m2-val">0 ₽ за м²</div> 
+    </div> 
+    <button class="btn-submit" onclick="sendData()">Оставить заявку</button> 
+</div> 
+
+<script> 
+    var catalog = { 
+      canvas: [ 
+        { 
+          title: "Матовое", 
+          price: 500, 
+          priceType: "м2", 
+          desc: "Классическое матовое покрытие без бликов. Выглядит как идеально ровная оштукатуренная стена.", 
+          images: ["mat.jpg"] 
+        }, 
+        { 
+          title: "Глянцевое", 
+          price: 700, 
+          priceType: "м2", 
+          desc: "Гладкая фактура с легким отражением света. Отлично визуально расширяет пространство.", 
+          images: ["glyanec.jpg"] 
+        } 
+      ], 
+      profile: [ 
+        { 
+          title: "Классическое примыкание", 
+          price: 0, 
+          priceType: "fixed", 
+          desc: "Классический ПВХ/Алюминиевый профиль по периметру с декоративной вставкой, черного или белого цвета.", 
+          images: ["bagetal3.jpg", "bagetal2.jpg", "bagetplastik2.jpg"] 
+        }, 
+        { 
+          title: "Теневое примыкание (EuroKRAAB)", 
+          price: 1200, 
+          priceType: "fixed", 
+          desc: "Стильный ровный зазор 6 мм вдоль стены. Создается эффект парящего в воздухе потолка.", 
+          images: ["eurokraab2.jpg", "eurokraab1.jpg"] 
+        }, 
+        { 
+          title: "Теневое примыкание (Bizon)", 
+          price: 1200, 
+          priceType: "fixed", 
+          desc: "Стильный ровный зазор 6 мм вдоль стены. Создается эффект парящего в воздухе потолка.", 
+          images: ["bizon1.jpg"] 
+        }, 
+        { 
+          title: "Парящее примыкание (Contour Pro Led Black)", 
+          price: 1200, 
+          priceType: "fixed", 
+          desc: "Стильный ровный зазор 6 мм вдоль стены. Создается эффект парящего в воздухе потолка.", 
+          images: ["contourproledblack2.jpg", "contourproledblack3.jpg", "contourproledblack4.jpg"] 
+        }, 
+        { 
+          title: "Парящее примыкание (Contour Pro Led White)", 
+          price: 1200, 
+          priceType: "fixed", 
+          desc: "Стильный ровный зазор 6 мм вдоль стены. Создается эффект парящего в воздухе потолка.", 
+          images: ["contourproledwhite2.jpg", "contourproledwhite3.jpg"] 
+        } 
+      ], 
+      curtains: [ 
+        { 
+          title: "Скрытый однорядный карниз АМ1 Black", 
+          price: 0, 
+          priceType: "fixed", 
+          desc: "информация.", 
+          images: ["gardinablack5.jpg", "am1black1.jpg", "gardinablack3.jpg"] 
+        }, 
+        { 
+          title: "Скрытый однорядный карниз АМ1 White", 
+          price: 1500, 
+          priceType: "fixed", 
+          desc: "описание", 
+          images: ["gardina2.jpg", "am1white.jpg"] 
+        }, 
+        { 
+          title: "Скрытый карниз Borzz Karniz 45 Black", 
+          price: 1500, 
+          priceType: "fixed", 
+          desc: "описание", 
+          images: ["gborzzblack1.jpg", "gborzzblack2.jpg", "gborzzblack3.jpg"] 
+        }, 
+        { 
+          title: "Скрытый карниз Borzz Karniz 45 White", 
+          price: 2000, 
+          priceType: "fixed", 
+          desc: "описание", 
+          images: ["gborzzwhite1.jpg", "gborzzwhite2.jpg", "gborzzwhite3.jpg"] 
+        }, 
+        { 
+          title: "Скрытый карниз Borzz Karniz P45 Black", 
+          price: 1500, 
+          priceType: "fixed", 
+          desc: "описание", 
+          images: ["pborzzblack1.jpg", "pborzzblack2.jpg", "pborzzblack3.jpg"] 
+        }, 
+        { 
+          title: "Скрытый карниз Borzz Karniz P45 White", 
+          price: 2000, 
+          priceType: "fixed", 
+          desc: "описание", 
+          images: ["pborzzwhite1.jpg", "pborzzwhite2.jpg"] 
+        } 
+      ], 
+      lighting: [ 
+        { 
+          title: "Световая линия Flexy White", 
+          price: 3900, 
+          priceType: "fixed", 
+          desc: "Отличное дополнение к интерьеру, подходит в качестве основного освещения.", 
+          images: ["svetlinewhite2.jpg", "svetlinewhite3.jpg"] 
+        }, 
+        { 
+          title: "Световая линия Flexy Black", 
+          price: 3900, 
+          priceType: "fixed", 
+          desc: "Световая линия с черным рассеивателем для стильных современных интерьеров.", 
+          images: ["svetline2.jpg", "svetline3.jpg"] 
+        } 
+      ] 
+    }; 
+ 
+    var tg = window.Telegram ? window.Telegram.WebApp : null; 
+    if (tg && tg.expand) { tg.expand(); } 
+ 
+    var selected = { 
+      canvas: { index: 0, price: catalog.canvas[0].price, type: catalog.canvas[0].priceType, title: catalog.canvas[0].title }, 
+      profile: { index: 0, price: catalog.profile[0].price, type: catalog.profile[0].priceType, title: catalog.profile[0].title }, 
+      curtains: { index: 0, price: catalog.curtains[0].price, type: catalog.curtains[0].priceType, title: catalog.curtains[0].title }, 
+      lighting: { index: 0, price: catalog.lighting[0].price, type: catalog.lighting[0].priceType, title: catalog.lighting[0].title } 
+    }; 
+ 
+    var activeModalState = { category: null, itemIndex: 0, imageIndex: 0 }; 
+ 
+    function initCatalog() { 
+      for (var cat in catalog) { 
+        renderCategory(cat); 
+      } 
+      calculateTotal(); 
+    } 
+ 
+    function renderCategory(category) { 
+      var grid = document.getElementById('grid-' + category); 
+      if (!grid) return; 
+       
+      grid.innerHTML = ''; 
+      var items = catalog[category]; 
+ 
+      for (var i = 0; i < items.length; i++) { 
+        var item = items[i]; 
+        var isSelected = (i === selected[category].index) ? 'selected' : ''; 
+        var priceText = item.price.toLocaleString('ru-RU') + ' ₽' + (item.priceType === 'м2' ? ' / м²' : ''); 
+ 
+        var cube = document.createElement('div'); 
+        cube.className = 'option-cube ' + isSelected; 
+        cube.setAttribute('onclick', "selectAndOpenModal('" + category + "', " + i + ", this)"); 
+        cube.innerHTML =  
+          '<img src="' + item.images[0] + '" alt="" class="cube-img" onerror="this.style.display=\'none\'">' + 
+          '<div class="cube-body">' + 
+            '<div class="cube-title">' + item.title + '</div>' + 
+            '<div class="cube-price">' + priceText + '</div>' + 
+          '</div>'; 
+        grid.appendChild(cube); 
+      } 
+    } 
+ 
+    function selectAndOpenModal(category, index, cubeElement) { 
+      var cubes = cubeElement.parentElement.querySelectorAll('.option-cube'); 
+      for (var i = 0; i < cubes.length; i++) { cubes[i].classList.remove('selected'); } 
+      cubeElement.classList.add('selected'); 
+ 
+      var item = catalog[category][index]; 
+      selected[category] = { 
+        index: index, 
+        price: item.price, 
+        type: item.priceType, 
+        title: item.title 
+      }; 
+ 
+      calculateTotal(); 
+      openModal(category, index); 
+    } 
+ 
+    /* Логика Модального Окна */ 
+    function openModal(category, index) { 
+      activeModalState.category = category; 
+      activeModalState.itemIndex = index; 
+      activeModalState.imageIndex = 0; 
+ 
+      updateModalView(); 
+      document.getElementById('modal-overlay').classList.add('active'); 
+    } 
+ 
+    function closeModal() { 
+      document.getElementById('modal-overlay').classList.remove('active'); 
+    } 
+ 
+    function closeModalOnOverlay(e) { 
+      if (e.target.id === 'modal-overlay') { 
+        closeModal(); 
+      } 
+    } 
+ 
+    function updateModalView() { 
+      var item = catalog[activeModalState.category][activeModalState.itemIndex]; 
+      var imgIndex = activeModalState.imageIndex; 
+      var imgElement = document.getElementById('modal-img'); 
+ 
+      document.getElementById('modal-title').innerText = item.title; 
+      document.getElementById('modal-desc').innerText = item.desc; 
+       
+      if (item.images && item.images.length > 0) { 
+        imgElement.src = item.images[imgIndex] || item.images[0]; 
+        imgElement.style.display = 'block'; 
+      } else { 
+        imgElement.style.display = 'none'; 
+      } 
+    } 
+ 
+    function slideModalImage(direction) { 
+      var images = catalog[activeModalState.category][activeModalState.itemIndex].images; 
+      if (!images || images.length === 0) return; 
+ 
+      activeModalState.imageIndex += direction; 
+ 
+      if (activeModalState.imageIndex >= images.length) { 
+        activeModalState.imageIndex = 0; 
+      } else if (activeModalState.imageIndex < 0) { 
+        activeModalState.imageIndex = images.length - 1; 
+      } 
+ 
+      updateModalView(); 
+    } 
+ 
+    function switchTab(tabId, btnElement) { 
+      var contents = document.querySelectorAll('.tab-content'); 
+      for (var i = 0; i < contents.length; i++) { contents[i].classList.remove('active'); } 
+      var btns = document.querySelectorAll('.tab-btn'); 
+      for (var i = 0; i < btns.length; i++) { btns[i].classList.remove('active'); } 
+       
+      document.getElementById(tabId).classList.add('active'); 
+      btnElement.classList.add('active'); 
+    } 
+ 
+    function calculateTotal() { 
+      var area = parseFloat(document.getElementById('area-input').value) || 0; 
+      var total = 0; 
+ 
+      for (var cat in selected) { 
+        var s = selected[cat]; 
+        if (s.type === 'м2') { 
+          total += area * s.price; 
+        } else { 
+          total += s.price; 
+        } 
+      } 
+ 
+      var pricePerM2 = area > 0 ? Math.round(total / area) : 0; 
+      document.getElementById('total-price-val').innerText = total.toLocaleString('ru-RU') + ' ₽'; 
+      document.getElementById('price-per-m2-val').innerText = pricePerM2.toLocaleString('ru-RU') + ' ₽ за м²'; 
+    } 
+ 
+    function sendData() { 
+      var area = document.getElementById('area-input').value; 
+      var totalPrice = document.getElementById('total-price-val').innerText; 
+      var orderData = { 
+        area: area + ' м²', 
+        canvas: selected.canvas.title, 
+        profile: selected.profile.title, 
+        curtains: selected.curtains.title, 
+        lighting: selected.lighting.title, 
+        totalPrice: totalPrice 
+      }; 
+      if (tg && tg.sendData) { 
+        tg.sendData(JSON.stringify(orderData)); 
+      } else { 
+        alert("Заявка сформирована!\n\n" + JSON.stringify(orderData, null, 2)); 
+      } 
+    } 
+ 
+    initCatalog(); 
+</script> 
+</body> 
+</html> 
