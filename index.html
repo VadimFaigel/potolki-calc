@@ -682,12 +682,16 @@ button {
     height: 240px;
     position: relative;
     background: var(--bg);
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .modal-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    pointer-events: none; /* Запрет перетягивания файла изображения */
 }
 
 .slider-dots {
@@ -863,6 +867,13 @@ button {
                 <span>→</span>
             </button>
 
+            <!-- Кнопка «Готовые решения» -->
+            <button class="menu-button" onclick="openCatalog('solutions')">
+                <span class="menu-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+                Готовые решения
+                <span class="menu-arrow">→</span>
+            </button>
+
             <!-- Кнопка «Рассчитать стоимость» -->
             <button class="menu-button" onclick="openSelection()">
                 <span class="menu-icon"><i class="fa-solid fa-calculator"></i></span>
@@ -951,15 +962,6 @@ button {
                     <div class="choice-arrow">→</div>
                 </div>
 
-                <div class="choice-card full" onclick="openCatalog('solutions')">
-                    <img src="vanna1.jpg" class="choice-image" onerror="this.style.display='none'">
-                    <div class="choice-body">
-                        <div class="choice-title">Готовые решения</div>
-                        <div class="choice-description">Посмотрите готовые проекты для разных помещений</div>
-                    </div>
-                    <div class="choice-arrow">→</div>
-                </div>
-
             </div>
 
         </div>
@@ -977,7 +979,7 @@ button {
         <div class="catalog-screen">
 
             <div class="screen-header">
-                <button class="back-btn" onclick="backToSelection()">←</button>
+                <button class="back-btn" onclick="backFromCatalog()">←</button>
                 <div>
                     <div id="catalog-title" class="header-title">Полотно</div>
                     <div id="catalog-subtitle" class="header-subtitle">Выберите подходящий вариант</div>
@@ -1149,7 +1151,7 @@ button {
         <div class="modal-card">
             <button class="modal-close" onclick="closeModal()">×</button>
 
-            <div class="modal-slider">
+            <div id="modal-slider" class="modal-slider">
                 <button class="slider-btn prev" onclick="slideModalImage(-1)">‹</button>
                 <img id="modal-img" class="modal-img" src="" alt="" onerror="this.style.display='none'">
                 <button class="slider-btn next" onclick="slideModalImage(1)">›</button>
@@ -1375,6 +1377,9 @@ var selected = {
     solutions: 0
 };
 
+var currentScreenId = "screen-home";
+var previousScreenId = "screen-home";
+
 var activeModalState = {
     category: null,
     itemIndex: 0,
@@ -1387,6 +1392,9 @@ var activeModalState = {
 ====================================================== */
 
 function showScreen(id) {
+    previousScreenId = currentScreenId;
+    currentScreenId = id;
+
     var screens = document.querySelectorAll(".screen");
     for (var i = 0; i < screens.length; i++) {
         screens[i].classList.remove("active");
@@ -1403,8 +1411,12 @@ function openSelection() {
     showScreen("screen-selection");
 }
 
-function backToSelection() {
-    showScreen("screen-selection");
+function backFromCatalog() {
+    if (previousScreenId && previousScreenId !== "screen-catalog") {
+        showScreen(previousScreenId);
+    } else {
+        showScreen("screen-home");
+    }
 }
 
 function openFaq() {
@@ -1624,6 +1636,46 @@ function slideModalImage(direction) {
     }
 
     updateModalView();
+}
+
+
+/* ======================================================
+   ОБРАБОТКА СВАЙПОВ В МОДАЛЬНОМ СЛАЙДЕРЕ
+====================================================== */
+
+var touchStartX = 0;
+var touchEndX = 0;
+var touchStartY = 0;
+var touchEndY = 0;
+
+var sliderElem = document.getElementById("modal-slider");
+
+sliderElem.addEventListener("touchstart", function(e) {
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+}, { passive: true });
+
+sliderElem.addEventListener("touchend", function(e) {
+    touchEndX = e.changedTouches[0].screenX;
+    touchEndY = e.changedTouches[0].screenY;
+    handleModalSwipe();
+}, { passive: true });
+
+function handleModalSwipe() {
+    var diffX = touchEndX - touchStartX;
+    var diffY = touchEndY - touchStartY;
+    var minSwipeDistance = 40; // минимальное расстояние для свайпа в пикселях
+
+    // Проверяем, что движение было именно горизонтальным (не вертикальный скролл)
+    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > minSwipeDistance) {
+        if (diffX < 0) {
+            // Свайп влево — следующий кадр
+            slideModalImage(1);
+        } else {
+            // Свайп вправо — предыдущий кадр
+            slideModalImage(-1);
+        }
+    }
 }
 
 
