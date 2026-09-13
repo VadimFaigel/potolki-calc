@@ -139,6 +139,7 @@ button {
     color: #8b9195;
     margin-top: 2px;
 }
+
 /* =========================
    HOME
 ========================= */
@@ -212,7 +213,18 @@ button {
     justify-content: space-between;
     padding: 0 20px;
     margin-bottom: 10px;
-    transition: .18s;
+    box-shadow: 0 6px 20px rgba(41, 50, 57, 0.25);
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+}
+
+.primary:hover {
+    box-shadow: 0 10px 25px rgba(41, 50, 57, 0.35);
+    transform: translateY(-2px);
+}
+
+.primary:active {
+    transform: scale(0.97) translateY(0);
+    box-shadow: 0 4px 12px rgba(41, 50, 57, 0.2);
 }
 
 .menu-button {
@@ -227,14 +239,19 @@ button {
     padding: 0 20px;
     font-size: 14px;
     color: #20272d;
-    transition: .18s;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03), 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
+.menu-button:hover {
+    box-shadow: 0 8px 30px rgba(41, 50, 57, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
+    transform: translateY(-2px);
+    background: #eaeaea;
 }
 
 .menu-button:active {
-    transform: scale(.98);
-    background: #e8e9ea;
+    transform: scale(0.97) translateY(0);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
 }
 
 .menu-icon {
@@ -280,6 +297,17 @@ button {
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+}
+
+.back-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+}
+
+.back-btn:active {
+    transform: scale(0.95);
 }
 
 .selection .header-title {
@@ -323,12 +351,20 @@ button {
     border-radius: 20px;
     overflow: hidden;
     cursor: pointer;
-    transition: .18s;
     position: relative;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03), 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.choice-card:hover {
+    box-shadow: 0 8px 30px rgba(41, 50, 57, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
+    transform: translateY(-2px);
+    border-color: #d0d0d5;
 }
 
 .choice-card:active {
-    transform: scale(.98);
+    transform: scale(0.97) translateY(0);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
 }
 
 .choice-card.full {
@@ -396,7 +432,14 @@ button {
     border-radius: 16px;
     overflow: hidden;
     cursor: pointer;
-    transition: .18s;
+    position: relative; /* Обязательно для позиционирования бейджа */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03), 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.catalog-card:hover {
+    box-shadow: 0 8px 30px rgba(41, 50, 57, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
+    transform: translateY(-2px);
 }
 
 .catalog-card.selected {
@@ -405,7 +448,34 @@ button {
 }
 
 .catalog-card:active {
-    transform: scale(.98);
+    transform: scale(0.97) translateY(0);
+}
+
+/* Микроанимация Checkmark Badge */
+.catalog-card .card-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 26px;
+    height: 26px;
+    background: var(--accent);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    
+    opacity: 0;
+    transform: scale(0.4);
+    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 3;
+}
+
+.catalog-card.selected .card-badge {
+    opacity: 1;
+    transform: scale(1);
 }
 
 .catalog-img {
@@ -467,7 +537,8 @@ button {
     border-radius: 20px;
     overflow: hidden;
     transform: scale(.94);
-    transition: .2s;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+    transition: .2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .modal-overlay.active .modal-card {
@@ -486,6 +557,36 @@ button {
     object-fit: cover;
 }
 
+/* Стили для индикатора фотографий (точки/палочки) */
+.slider-dots {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 5px;
+    z-index: 4;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 5px 8px;
+    border-radius: 20px;
+    backdrop-filter: blur(4px);
+}
+
+.slider-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    transition: background .18s, width .18s;
+}
+
+.slider-dot.active {
+    background: #ffffff;
+    width: 16px;
+    border-radius: 3px;
+}
+
 .modal-close {
     position: absolute;
     right: 10px;
@@ -499,6 +600,15 @@ button {
     font-size: 18px;
     z-index: 5;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.modal-close:hover {
+    background: rgba(0,0,0,.85);
+    transform: scale(1.05);
 }
 
 .slider-btn {
@@ -511,9 +621,19 @@ button {
     border: none;
     background: rgba(0,0,0,.65);
     color: white;
-    font-size: 23px;
+    font-size: 20px;
     z-index: 4;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.slider-btn:hover {
+    background: rgba(0,0,0,.85);
+    transform: translateY(-50%) scale(1.05);
 }
 
 .slider-btn.prev {
@@ -606,9 +726,9 @@ button {
                 </div>
             </div>
 
-            <!-- Кнопка «Начать подбор» с иконкой ползунков настройки -->
+            <!-- Кнопка «Открыть каталог» с иконкой ползунков настройки -->
             <button class="primary" onclick="openSelection()">
-                <span><i class="fa-solid fa-sliders"></i> &nbsp; Начать подбор</span>
+                <span><i class="fa-solid fa-sliders"></i> &nbsp; Открыть каталог</span>
                 <span>→</span>
             </button>
 
@@ -758,6 +878,9 @@ button {
                 <button class="slider-btn prev" onclick="slideModalImage(-1)">‹</button>
                 <img id="modal-img" class="modal-img" src="" alt="" onerror="this.style.display='none'">
                 <button class="slider-btn next" onclick="slideModalImage(1)">›</button>
+                
+                <!-- Индикатор фотографий (точки/палочки) -->
+                <div id="slider-dots" class="slider-dots"></div>
             </div>
 
             <div class="modal-content">
@@ -1063,6 +1186,7 @@ function renderCatalog(category) {
         }
 
         card.innerHTML =
+            '<div class="card-badge"><i class="fa-solid fa-check"></i></div>' +
             '<img src="' + image + '" class="catalog-img" onerror="this.style.display=\'none\'">' +
             '<div class="catalog-body">' +
                 '<div class="catalog-title">' + item.title + '</div>' +
@@ -1113,8 +1237,12 @@ function updateModalView() {
     var image = document.getElementById("modal-img");
     var title = document.getElementById("modal-title");
     var desc = document.getElementById("modal-desc");
+    var dotsContainer = document.getElementById("slider-dots");
+    var prevBtn = document.querySelector(".slider-btn.prev");
+    var nextBtn = document.querySelector(".slider-btn.next");
 
     title.innerText = item.title;
+    dotsContainer.innerHTML = "";
 
     if (item.images && item.images.length > 0) {
         var current = item.images[state.imageIndex];
@@ -1128,16 +1256,50 @@ function updateModalView() {
         }
 
         image.style.display = "block";
+
+        // Если фотографий больше одной — показываем стрелки и точки
+        if (item.images.length > 1) {
+            if (prevBtn) prevBtn.style.display = "flex";
+            if (nextBtn) nextBtn.style.display = "flex";
+            dotsContainer.style.display = "flex";
+
+            for (var i = 0; i < item.images.length; i++) {
+                var dot = document.createElement("div");
+                dot.className = "slider-dot";
+                if (i === state.imageIndex) {
+                    dot.classList.add("active");
+                }
+                
+                // Делаем точки кликабельными для переключения фото
+                dot.onclick = (function(idx) {
+                    return function() {
+                        activeModalState.imageIndex = idx;
+                        updateModalView();
+                    };
+                })(i);
+
+                dotsContainer.appendChild(dot);
+            }
+        } else {
+            // Если фото всего одно — прячем стрелки и точки
+            if (prevBtn) prevBtn.style.display = "none";
+            if (nextBtn) nextBtn.style.display = "none";
+            dotsContainer.style.display = "none";
+        }
+
     } else {
         image.style.display = "none";
         desc.innerText = item.desc;
+        if (prevBtn) prevBtn.style.display = "none";
+        if (nextBtn) nextBtn.style.display = "none";
+        dotsContainer.style.display = "none";
     }
 }
 
 function slideModalImage(direction) {
     var images = catalog[activeModalState.category][activeModalState.itemIndex].images;
 
-    if (!images || !images.length) return;
+    if (!images || images.length <= 1) return;
 
     activeModalState.imageIndex += direction;
 
