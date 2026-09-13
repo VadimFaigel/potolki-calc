@@ -1,735 +1,1185 @@
-<!DOCTYPE html> 
-<html lang="ru"> 
-<head> 
-    <meta charset="UTF-8"> 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
-    <title>Калькулятор потолков</title> 
-    <script src="https://telegram.org/js/telegram-web-app.js"></script> 
-    <style> 
-        :root {
-          --bg-color: #121212;
-          --card-bg: #1e1e1e;
-          --card-border: #2a2a2a;
-          --accent-color: #d49a51;
-          --accent-soft: rgba(212, 154, 81, 0.15);
-          --text-main: #ffffff;
-          --text-muted: #8e8e93;
-        }
-    
-        * {
-          box-sizing: border-box;
-          margin: 0;
-          padding: 0;
-          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-          -webkit-tap-highlight-color: transparent;
-        }
-    
-        body {
-          background-color: var(--bg-color);
-          color: var(--text-main);
-          padding-bottom: 20px;
-        }
-    
-        /* Навигация с невидимой прокруткой и аккуратными иконками */
-        .tabs-header {
-          display: flex;
-          overflow-x: auto;
-          background-color: var(--card-bg);
-          border-bottom: 1px solid var(--card-border);
-          position: sticky;
-          top: 0;
-          z-index: 10;
-          scrollbar-width: none;
-          -ms-overflow-style: none;
-        }
-        .tabs-header::-webkit-scrollbar { display: none; }
-    
-        .tab-btn {
-          flex: 1 0 auto;
-          padding: 12px 14px;
-          background: none;
-          border: none;
-          color: var(--text-muted);
-          font-size: 12px;
-          font-weight: 600;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-          cursor: pointer;
-          border-bottom: 2px solid transparent;
-          transition: all 0.2s ease;
-          text-align: center;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 4px;
-        }
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
 
-        .tab-btn svg {
-          width: 18px;
-          height: 18px;
-          fill: currentColor;
-          opacity: 0.7;
-          transition: opacity 0.2s ease;
-        }
-    
-        .tab-btn.active {
-          color: var(--accent-color);
-          border-bottom-color: var(--accent-color);
-        }
+<meta name="viewport"
+      content="width=device-width,
+      initial-scale=1.0,
+      maximum-scale=1.0,
+      user-scalable=no">
 
-        .tab-btn.active svg {
-          opacity: 1;
-        }
-    
-        .tab-content {
-          display: none;
-          padding: 16px;
-        }
-        .tab-content.active { display: block; }
-    
-        .section-title {
-          font-size: 12px;
-          color: var(--text-muted);
-          text-transform: uppercase;
-          letter-spacing: 0.8px;
-          margin-bottom: 12px;
-        }
-    
-        /* Вкладка 1 (Главная): Эстетичный баннер с золотой плашкой */
-        .hero-banner {
-          background: linear-gradient(135deg, #252525 0%, #1a1a1a 100%);
-          border: 1px solid var(--card-border);
-          border-left: 3px solid var(--accent-color);
-          border-radius: 16px;
-          padding: 20px;
-          margin-bottom: 20px;
-          position: relative;
-          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-        }
+<title>Потолки PRO</title>
 
-        .hero-title {
-          font-size: 20px;
-          font-weight: 800;
-          color: var(--text-main);
-          margin-bottom: 6px;
-        }
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<!-- Подключение библиотеки иконок FontAwesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-        .hero-title span {
-          color: var(--accent-color);
-        }
+<style>
 
-        .hero-subtitle {
-          font-size: 13px;
-          color: var(--text-muted);
-          line-height: 1.4;
-        }
+:root {
+    --bg: #f3f4f5;
+    --card: #ffffff;
+    --card-hover: #eaeaea;
+    --border: #e2e2e6;
 
-        /* Шикарные карточки-навигаторы с векторной графикой, тонкой золотой рамкой и эффектом глубины */
-        .nav-grid {
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 12px;
-          margin-bottom: 16px;
-        }
+    --accent: #293239;
+    --accent-light: #43444a;
+    --accent-bg: rgba(41,50,57,.07);
 
-        .nav-card {
-          background: linear-gradient(145deg, #222225 0%, #19191c 100%);
-          border: 1px solid rgba(212, 154, 81, 0.3);
-          box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-          border-radius: 14px;
-          padding: 16px;
-          cursor: pointer;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          min-height: 120px;
-          transition: all 0.2s ease;
-          position: relative;
-          overflow: hidden;
-        }
+    --white: #ffffff;
+    --text: #20272d;
+    --muted: #8b9195;
 
-        .nav-card:active {
-          border-color: var(--accent-color);
-          transform: translateY(1px);
-          box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
-        }
+    --radius: 24px;
+}
 
-        .nav-card-icon {
-          width: 26px;
-          height: 26px;
-          color: var(--accent-color);
-          margin-bottom: 10px;
-        }
 
-        .nav-card-title {
-          font-size: 13px;
-          font-weight: 700;
-          color: #fff;
-          line-height: 1.3;
-        }
+/* =========================
+   RESET
+========================= */
 
-        /* Золотистый цвет подзаголовков карточек */
-        .nav-card-sub {
-          font-size: 11px;
-          color: var(--accent-color);
-          margin-top: 4px;
-          font-weight: 500;
-        }
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 
-        /* Аккуратный текстовый блок с подсказкой */
-        .info-hint {
-          background: var(--card-bg);
-          border: 1px solid var(--card-border);
-          border-radius: 12px;
-          padding: 14px 16px;
-          font-size: 12px;
-          color: var(--text-muted);
-          line-height: 1.45;
-          margin-bottom: 16px;
-          display: flex;
-          align-items: flex-start;
-          gap: 10px;
-          box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
-        }
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        sans-serif;
 
-        .info-hint svg {
-          width: 18px;
-          height: 18px;
-          color: var(--accent-color);
-          flex-shrink: 0;
-          margin-top: 1px;
-        }
-    
-        /* Сетка карточек товаров */
-        .options-grid {
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 12px;
-          margin-bottom: 16px;
-        }
-    
-        .option-cube {
-          background: var(--card-bg);
-          border: 2px solid var(--card-border);
-          border-radius: 12px;
-          overflow: hidden;
-          cursor: pointer;
-          transition: all 0.2s ease;
-          display: flex;
-          flex-direction: column;
-        }
-    
-        .option-cube.selected {
-          border-color: var(--accent-color);
-          background: var(--accent-soft);
-        }
-    
-        .cube-img {
-          width: 100%;
-          height: 90px;
-          object-fit: cover;
-          background-color: #252525;
-        }
-    
-        .cube-body {
-          padding: 10px;
-          display: flex;
-          flex-direction: column;
-          flex-grow: 1;
-          justify-content: space-between;
-          gap: 4px;
-        }
-    
-        .cube-title {
-          font-size: 12px;
-          font-weight: 600;
-          color: var(--text-main);
-          line-height: 1.2;
-        }
-    
-        .cube-price {
-          font-size: 12px;
-          font-weight: 700;
-          color: var(--accent-color);
-        }
-    
-        /* ВСПЛЫВАЮЩЕЕ ОКНО */
-        .modal-overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100vw;
-          height: 100vh;
-          background: rgba(0, 0, 0, 0.85);
-          backdrop-filter: blur(5px);
-          z-index: 1000;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 16px;
-          opacity: 0;
-          visibility: hidden;
-          transition: opacity 0.25s ease, visibility 0.25s ease;
-        }
-    
-        .modal-overlay.active {
-          opacity: 1;
-          visibility: visible;
-        }
-    
-        .modal-card {
-          background: var(--card-bg);
-          border: 1px solid var(--card-border);
-          border-radius: 16px;
-          width: 100%;
-          max-width: 400px;
-          overflow: hidden;
-          position: relative;
-          transform: scale(0.9);
-          transition: transform 0.25s ease;
-          box-shadow: 0 10px 30px rgba(0,0,0,0.7);
-        }
-    
-        .modal-overlay.active .modal-card {
-          transform: scale(1);
-        }
-    
-        .modal-close-btn {
-          position: absolute;
-          top: 10px;
-          right: 10px;
-          background: rgba(0, 0, 0, 0.7);
-          color: #fff;
-          border: none;
-          width: 32px;
-          height: 32px;
-          border-radius: 50%;
-          font-size: 18px;
-          cursor: pointer;
-          z-index: 10;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-    
-        .modal-slider {
-          position: relative;
-          width: 100%;
-          height: 220px;
-          background: #252525;
-        }
-    
-        .modal-img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          display: block;
-        }
-    
-        .slider-btn {
-          position: absolute;
-          top: 50%;
-          transform: translateY(-50%);
-          background: rgba(0, 0, 0, 0.65);
-          color: #fff;
-          border: none;
-          border-radius: 50%;
-          width: 36px;
-          height: 36px;
-          cursor: pointer;
-          font-size: 18px;
-          z-index: 2;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-        .slider-btn.prev { left: 10px; }
-        .slider-btn.next { right: 10px; }
-    
-        .modal-content {
-          padding: 16px;
-        }
-    
-        .modal-title {
-          font-size: 16px;
-          font-weight: 700;
-          color: var(--accent-color);
-          margin-bottom: 6px;
-        }
-    
-        .modal-desc {
-          font-size: 13px;
-          color: var(--text-muted);
-          line-height: 1.4;
-        }
-    </style> 
-</head> 
-<body> 
+    -webkit-tap-highlight-color: transparent;
+}
 
-<!-- Шапка вкладок с иконками --> 
-<div class="tabs-header"> 
-    <button class="tab-btn active" onclick="switchTab('tab-main', this)">
-        <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-        Главная
-    </button> 
-    <button class="tab-btn" onclick="switchTab('tab-canvas', this)">
-        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/></svg>
-        Полотна
-    </button> 
-    <button class="tab-btn" onclick="switchTab('tab-profile', this)">
-        <svg viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg>
-        Примыкания
-    </button> 
-    <button class="tab-btn" onclick="switchTab('tab-curtains', this)">
-        <svg viewBox="0 0 24 24"><path d="M3 4h18v2H3V4zm2 4h14v12H5V8zm2 2v8h10v-8H7z"/></svg>
-        Скрытые карнизы
-    </button> 
-    <button class="tab-btn" onclick="switchTab('tab-lighting', this)">
-        <svg viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C7.8 12.16 7 10.63 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z"/></svg>
-        Световые решения
-    </button> 
-</div> 
+html,
+body {
+    min-height: 100%;
+}
 
-<!-- Вкладка 1: Главная --> 
-<div id="tab-main" class="tab-content active"> 
-    <div class="hero-banner">
-      <div class="hero-title">Каталог <span>потолочных систем</span></div>
-      <div class="hero-subtitle">Современные профили, скрытые карнизы и световые решения для вашего интерьера.</div>
+body {
+    background: var(--bg);
+    color: var(--text);
+    padding-bottom: 25px;
+}
+
+button {
+    font: inherit;
+    border: none;
+    cursor: pointer;
+}
+
+
+/* =========================
+   SCREENS
+========================= */
+
+.screen {
+    display: none;
+    min-height: 100vh;
+}
+
+.screen.active {
+    display: block;
+}
+
+
+/* =========================
+   APP CONTAINER
+========================= */
+
+.app {
+    width: 100%;
+    max-width: 430px;
+    min-height: 100vh;
+    margin: auto;
+    background: #fff;
+    position: relative;
+    overflow: hidden;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.header {
+    height: 72px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    border-bottom: 1px solid #eee;
+    background: rgba(255,255,255,.96);
+}
+
+.logo {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #252d32;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 21px;
+    margin-right: 12px;
+}
+
+.header-title {
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.header-subtitle {
+    font-size: 12px;
+    color: #8b9195;
+    margin-top: 2px;
+}
+
+
+/* =========================
+   HOME
+========================= */
+
+.home {
+    padding: 22px 18px 40px;
+}
+
+.hero {
+    height: 350px;
+    border-radius: 25px;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 20px;
+    background: #e2e2e6;
+}
+
+.hero-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hero-content {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 35px 20px 22px 20px;
+    background: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.85) 35%,
+        rgba(255, 255, 255, 0.98) 70%,
+        rgba(255, 255, 255, 1) 100%
+    );
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+
+}
+
+.greeting {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #535b61;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.hero h1 {
+    font-size: 26px;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+    color: #20272d;
+}
+
+.hero p {
+    color: #555d64;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.primary {
+    width: 100%;
+    height: 60px;
+    background: #293239;
+    color: white;
+    border-radius: 16px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    margin-bottom: 12px;
+    transition: .18s;
+}
+
+.primary:active {
+    transform: scale(.98);
+}
+
+.primary span:last-child {
+    font-size: 22px;
+}
+
+.menu-button {
+    width: 100%;
+    height: 58px;
+    background: #f1f2f3;
+    border-radius: 15px;
+    font-weight: 500;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    font-size: 14px;
+    color: #20272d;
+    transition: .18s;
+}
+
+.menu-button:active {
+    transform: scale(.98);
+    background: #e8e9ea;
+}
+
+.menu-icon {
+    width: 28px;
+    font-size: 18px;
+    margin-right: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.menu-arrow {
+    margin-left: auto;
+    font-size: 20px;
+    color: #8b9195;
+}
+
+
+/* =========================
+   SELECTION SCREEN (Что выбираем?)
+========================= */
+
+.selection {
+    padding: 18px 16px 30px;
+}
+
+.screen-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.back-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.header-title {
+    font-size: 21px;
+    font-weight: 800;
+}
+
+.header-subtitle {
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 3px;
+}
+
+.progress {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 20px;
+}
+
+.progress-line {
+    height: 3px;
+    flex: 1;
+    border-radius: 10px;
+    background: var(--border);
+}
+
+.progress-line.active {
+    background: var(--accent);
+}
+
+.choice-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.choice-card {
+    min-height: 155px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: .18s;
+    position: relative;
+}
+
+.choice-card:active {
+    transform: scale(.98);
+}
+
+.choice-card.full {
+    grid-column: span 2;
+    min-height: 120px;
+}
+
+.choice-image {
+    width: 100%;
+    height: 92px;
+    object-fit: cover;
+    display: block;
+    background: var(--bg);
+}
+
+.choice-body {
+    padding: 11px 12px;
+}
+
+.choice-title {
+    font-size: 13px;
+    font-weight: 750;
+    margin-bottom: 4px;
+    color: var(--text);
+}
+
+.choice-description {
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.3;
+}
+
+.choice-arrow {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: var(--accent-bg);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* =========================
+   CATALOG SCREEN
+========================= */
+
+.catalog-screen {
+    padding: 18px 16px 30px;
+}
+
+.catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.catalog-card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 15px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: .18s;
+}
+
+.catalog-card.selected {
+    border-color: var(--accent);
+    background: var(--accent-bg);
+}
+
+.catalog-card:active {
+    transform: scale(.98);
+}
+
+.catalog-img {
+    width: 100%;
+    height: 110px;
+    object-fit: cover;
+    display: block;
+    background: var(--bg);
+}
+
+.catalog-body {
+    padding: 11px;
+}
+
+.catalog-title {
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 7px;
+    color: var(--text);
+}
+
+.catalog-price {
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 800;
+}
+
+
+/* =========================
+   MODAL
+========================= */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.65);
+    backdrop-filter: blur(7px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    opacity: 0;
+    visibility: hidden;
+    transition: .2s;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-card {
+    width: 100%;
+    max-width: 410px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+    transform: scale(.94);
+    transition: .2s;
+}
+
+.modal-overlay.active .modal-card {
+    transform: scale(1);
+}
+
+.modal-slider {
+    height: 240px;
+    position: relative;
+    background: var(--bg);
+}
+
+.modal-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.modal-close {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(0,0,0,.65);
+    color: white;
+    font-size: 18px;
+    z-index: 5;
+    cursor: pointer;
+}
+
+.slider-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0,0,0,.65);
+    color: white;
+    font-size: 23px;
+    z-index: 4;
+    cursor: pointer;
+}
+
+.slider-btn.prev {
+    left: 10px;
+}
+
+.slider-btn.next {
+    right: 10px;
+}
+
+.modal-content {
+    padding: 18px;
+}
+
+.modal-title {
+    color: var(--text);
+    font-size: 17px;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.modal-desc {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+
+/* =========================
+   DESKTOP LIMIT
+========================= */
+
+@media (min-width: 600px) {
+    body {
+        padding: 30px;
+    }
+
+    .app {
+        border-radius: 30px;
+        min-height: 850px;
+        box-shadow: 0 20px 60px rgba(0,0,0,.12);
+    }
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="app">
+
+    <!-- HEADER -->
+
+    <header class="header">
+        <div class="logo">⌂</div>
+        <div>
+            <div class="header-title">Потолки PRO</div>
+            <div class="header-subtitle">Бот для выбора потолков</div>
+        </div>
+    </header>
+
+
+    <!-- ======================================================
+         ГЛАВНАЯ СТРАНИЦА
+    ====================================================== -->
+
+    <section id="screen-home" class="screen active">
+
+        <div class="home">
+
+            <div class="hero">
+                <!-- Картинка на главном экране -->
+                <img src="glavnaya.jpg" class="hero-image" alt="Потолок" onerror="this.style.display='none'">
+
+                <div class="hero-content">
+                    <div class="greeting">Привет!</div>
+
+                    <h1>
+                        Соберите<br>
+                        свой потолок
+                    </h1>
+
+                    <p>
+                        Выберите потолок, карнизы,
+                        освещение и другие элементы —
+                        мы подскажем лучшее решение
+                        для вашего интерьера.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Кнопка «Начать подбор» с иконкой ползунков настройки -->
+            <button class="primary" onclick="openSelection()">
+                <span><i class="fa-solid fa-sliders"></i> &nbsp; Начать подбор</span>
+                <span>→</span>
+            </button>
+
+            <!-- Кнопка «Рассчитать стоимость» с иконкой калькулятора -->
+            <button class="menu-button" onclick="openSelection()">
+                <span class="menu-icon"><i class="fa-solid fa-calculator"></i></span>
+                Рассчитать стоимость
+                <span class="menu-arrow">→</span>
+            </button>
+
+            <!-- Кнопка «Мои проекты» с иконкой папки -->
+            <button class="menu-button" onclick="alert('Раздел в разработке')">
+                <span class="menu-icon"><i class="fa-regular fa-folder-open"></i></span>
+                Мои проекты
+                <span class="menu-arrow">→</span>
+            </button>
+
+            <!-- Кнопка «Помощь» с иконкой вопроса в кружке -->
+            <button class="menu-button" onclick="contactManager()">
+                <span class="menu-icon"><i class="fa-regular fa-circle-question"></i></span>
+                Помощь
+                <span class="menu-arrow">→</span>
+            </button>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ======================================================
+         ЭКРАН ВЫБОРА ЭЛЕМЕНТОВ (Что выбираем?)
+    ====================================================== -->
+
+    <section id="screen-selection" class="screen">
+
+        <div class="selection">
+
+            <div class="screen-header">
+                <button class="back-btn" onclick="goHome()">←</button>
+                <div>
+                    <div class="header-title">Что выбираем?</div>
+                    <div class="header-subtitle">Соберите потолок из нужных элементов</div>
+                </div>
+            </div>
+
+            <div class="progress">
+                <div class="progress-line active"></div>
+                <div class="progress-line"></div>
+                <div class="progress-line"></div>
+                <div class="progress-line"></div>
+            </div>
+
+            <div class="choice-grid">
+
+                <!-- ПОЛОТНО -->
+                <div class="choice-card" onclick="openCatalog('canvas')">
+                    <img src="mat.jpg" class="choice-image" onerror="this.style.display='none'">
+                    <div class="choice-body">
+                        <div class="choice-title">Полотно</div>
+                        <div class="choice-description">Матовые и глянцевые варианты</div>
+                    </div>
+                    <div class="choice-arrow">→</div>
+                </div>
+
+                <!-- КАРНИЗ -->
+                <div class="choice-card" onclick="openCatalog('curtains')">
+                    <img src="gardinablack5.jpg" class="choice-image" onerror="this.style.display='none'">
+                    <div class="choice-body">
+                        <div class="choice-title">Карниз</div>
+                        <div class="choice-description">Скрытые решения для штор</div>
+                    </div>
+                    <div class="choice-arrow">→</div>
+                </div>
+
+                <!-- ПРИМЫКАНИЕ -->
+                <div class="choice-card" onclick="openCatalog('profile')">
+                    <img src="bizon1.jpg" class="choice-image" onerror="this.style.display='none'">
+                    <div class="choice-body">
+                        <div class="choice-title">Примыкание</div>
+                        <div class="choice-description">Классическое, теневое и парящее</div>
+                    </div>
+                    <div class="choice-arrow">→</div>
+                </div>
+
+                <!-- СВЕТ -->
+                <div class="choice-card" onclick="openCatalog('lighting')">
+                    <img src="svetlinewhite2.jpg" class="choice-image" onerror="this.style.display='none'">
+                    <div class="choice-body">
+                        <div class="choice-title">Свет</div>
+                        <div class="choice-description">Световые линии и решения</div>
+                    </div>
+                    <div class="choice-arrow">→</div>
+                </div>
+
+                <!-- ГОТОВЫЕ РЕШЕНИЯ -->
+                <div class="choice-card full" onclick="openCatalog('solutions')">
+                    <img src="vanna1.jpg" class="choice-image" onerror="this.style.display='none'">
+                    <div class="choice-body">
+                        <div class="choice-title">Готовые решения</div>
+                        <div class="choice-description">Посмотрите готовые проекты для разных помещений</div>
+                    </div>
+                    <div class="choice-arrow">→</div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ======================================================
+         ЭКРАН КАТАЛОГА
+    ====================================================== -->
+
+    <section id="screen-catalog" class="screen">
+
+        <div class="catalog-screen">
+
+            <div class="screen-header">
+                <button class="back-btn" onclick="backToSelection()">←</button>
+                <div>
+                    <div id="catalog-title" class="header-title">Полотно</div>
+                    <div id="catalog-subtitle" class="header-subtitle">Выберите подходящий вариант</div>
+                </div>
+            </div>
+
+            <div id="catalog-grid" class="catalog-grid"></div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ======================================================
+         МОДАЛЬНОЕ ОКНО
+    ====================================================== -->
+
+    <div id="modal-overlay" class="modal-overlay" onclick="closeModalOnOverlay(event)">
+        <div class="modal-card">
+            <button class="modal-close" onclick="closeModal()">×</button>
+
+            <div class="modal-slider">
+                <button class="slider-btn prev" onclick="slideModalImage(-1)">‹</button>
+                <img id="modal-img" class="modal-img" src="" alt="" onerror="this.style.display='none'">
+                <button class="slider-btn next" onclick="slideModalImage(1)">›</button>
+            </div>
+
+            <div class="modal-content">
+                <div id="modal-title" class="modal-title"></div>
+                <div id="modal-desc" class="modal-desc"></div>
+            </div>
+        </div>
     </div>
 
-    <div class="section-title">Разделы каталога</div>
-    <div class="nav-grid">
-      <!-- Иконка рулона полотна -->
-      <div class="nav-card" onclick="goToTab('tab-canvas', 1)">
-        <svg class="nav-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7"/><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2H3V7z"/><path d="M7 12h10"/></svg>
-        <div>
-          <div class="nav-card-title">Типы полотен</div>
-          <div class="nav-card-sub">Матовые, глянцевые</div>
-        </div>
-      </div>
+</div>
 
-      <!-- Иконка профиля -->
-      <div class="nav-card" onclick="goToTab('tab-profile', 2)">
-        <svg class="nav-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-        <div>
-          <div class="nav-card-title">Примыкание и профили</div>
-          <div class="nav-card-sub">Классические, теневые и парящие</div>
-        </div>
-      </div>
 
-      <!-- Иконка карниза -->
-      <div class="nav-card" onclick="goToTab('tab-curtains', 3)">
-        <svg class="nav-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 5h18M3 10h18M5 5v14M19 5v14"/></svg>
-        <div>
-          <div class="nav-card-title">Скрытые карнизы</div>
-          <div class="nav-card-sub">Ниши под шторы с подсветкой и без</div>
-        </div>
-      </div>
 
-      <!-- Иконка света -->
-      <div class="nav-card" onclick="goToTab('tab-lighting', 4)">
-        <svg class="nav-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2m-4.22-7.78l-1.42 1.42M5.64 18.36l-1.42 1.42"/></svg>
-        <div>
-          <div class="nav-card-title">Световые решения</div>
-          <div class="nav-card-sub">Световые линии Flexy</div>
-        </div>
-      </div>
-    </div>
+<script>
 
-    <div class="info-hint">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-      <div>Нажимайте на любую карточку в каталоге, чтобы посмотреть детали, узлы крупным планом и примеры в интерьере.</div>
-    </div>
-</div> 
+/* ======================================================
+   TELEGRAM WEB APP
+====================================================== */
 
-<!-- Вкладка 2: Полотно --> 
-<div id="tab-canvas" class="tab-content"> 
-    <div class="section-title">Выберите тип полотна</div> 
-    <div id="grid-canvas" class="options-grid"></div> 
-</div> 
+var tg = window.Telegram ? window.Telegram.WebApp : null;
 
-<!-- Вкладка 3: Примыкание --> 
-<div id="tab-profile" class="tab-content"> 
-    <div class="section-title">Тип примыкания профиля</div> 
-    <div id="grid-profile" class="options-grid"></div> 
-</div> 
+if (tg && tg.expand) {
+    tg.expand();
+}
 
-<!-- Вкладка 4: Карнизы --> 
-<div id="tab-curtains" class="tab-content"> 
-    <div class="section-title">Карнизы</div> 
-    <div id="grid-curtains" class="options-grid"></div> 
-</div> 
 
-<!-- Вкладка 5: Световые решения --> 
-<div id="tab-lighting" class="tab-content"> 
-    <div class="section-title">Световые решения</div> 
-    <div id="grid-lighting" class="options-grid"></div> 
-</div> 
+/* ======================================================
+   КАТАЛОГ ДАННЫХ
+====================================================== */
 
-<!-- ВСПЛЫВАЮЩЕЕ МОДАЛЬНОЕ ОКНО --> 
-<div id="modal-overlay" class="modal-overlay" onclick="closeModalOnOverlay(event)"> 
-    <div class="modal-card"> 
-        <button class="modal-close-btn" onclick="closeModal()">✕</button> 
-        <div class="modal-slider"> 
-            <button class="slider-btn prev" onclick="slideModalImage(-1)">‹</button> 
-            <img id="modal-img" src="" alt="" class="modal-img" onerror="this.style.display='none'"> 
-            <button class="slider-btn next" onclick="slideModalImage(1)">›</button> 
-        </div> 
-        <div class="modal-content"> 
-            <div id="modal-title" class="modal-title"></div> 
-            <div id="modal-desc" class="modal-desc"></div> 
-        </div> 
-    </div> 
-</div> 
+var catalog = {
 
-<script> 
-    var catalog = { 
-      canvas: [ 
-        { 
-          title: "Матовое", 
-          price:  370, 
-          priceType: "м2", 
-          desc: "Матовый натяжной потолок дарит помещению классический уют, безупречно имитируя идеально оштукатуренную поверхность без нежелательных бликов. Он создает мягкую, спокойную атмосферу и гармонично вписывается в абсолютно любой стиль интерьера.", 
-          images: ["mat.jpg"] 
-        }, 
-        { 
-          title: "Глянцевое", 
-          price:  380, 
-          priceType: "м2", 
-          desc: "Глянцевый натяжной потолок облагораживает интерьер зеркальным блеском, который визуально расширяет пространство и наполняет комнату светом. Его отражающая поверхность создает эффект высоких потолков, идеально подходя для современных дизайнов и небольших помещений.", 
-          images: ["glyanec.jpg"] 
-        } 
-      ], 
-      profile: [ 
-        { 
-          title: "Классическое примыкание", 
-          price: 740, 
-          priceType: "м", 
-          desc: "Классическое примыкание профиля - Универсальное и бюджетное решение, создающее аккуратный переход от потолка к стене за счет декоративной заглушки. Оно подходит для большинства стандартных интерьеров и обеспечивает привычный, завершенный вид.", 
-          images: ["bagetal3.jpg", "bagetal2.jpg", "bagetplastik2.jpg"] 
-        }, 
-        { 
-         title: "Теневое примыкание (Bizon)", 
-          price: 1200, 
-          priceType: "м", 
-          desc: "Теневое примыкание Bizon - Надежный профиль с плавными, слегка закруглёнными углами, который формирует аккуратный зазор и эффектно визуально отрывает потолок от стен.", 
-          images: ["bizon1.jpg"] 
-        }, 
-        { 
-          title: "Теневое примыкание (EuroKRAAB)", 
-          price: 2500, 
-          priceType: "м", 
-          desc: "Теневое примыкание EuroKrab создает эффектный теневой зазор без маскировочных лент, образуя ровную линию периметра и четкие, строго графичные углы под 90°.", 
-          images: ["eurokraab2.jpg", "eurokraab1.jpg"] 
-        }, 
-        { 
-          title: "Парящее примыкание (Contour Pro Led Black)", 
-          price: 3000, 
-          priceType: "м", 
-          desc: "Парящее примыкание Contour LED Pro Black - Черный профиль с интегрированной светодиодной подсветкой создает эффект буквально висящего в воздухе потолка. Черный теневой паз добавляет конструкции глубины и контраста, выгодно выделяя мягкий свет на фоне стены.", 
-          images: ["contourproledblack2.jpg", "contourproledblack3.jpg", "contourproledblack4.jpg"] 
-        }, 
-        { 
-          title: "Парящее примыкание (Contour Pro Led White)", 
-          price: 3000, 
-          priceType: "м", 
-          desc: "Парящее примыкание Contour LED Pro White - Белоснежный профиль мягко рассеивает свет по периметру, визуально приподнимая потолок и наполняя комнату воздухом. Белое основание сливается с полотном, оставляя в центре внимания лишь чистое, парящее свечение.", 
-          images: ["contourproledwhite2.jpg", "contourproledwhite3.jpg"] 
-        } 
-      ], 
-      curtains: [ 
-        { 
-          title: "Скрытый однорядный карниз АМ1 Black", 
-          price: 2800, 
-          priceType: "м", 
-          desc: "Скрытая однорядная гардина АM1 Black - Лаконичный черный профиль формирует стильный скрытый трек для текстиля, а также отлично подходит для шторки в ванную или зонирования гардеробных систем.", 
-          images: ["gardinablack5.jpg", "am1black1.jpg", "gardinablack3.jpg"] 
-        }, 
-        { 
-          title: "Скрытый однорядный карниз АМ1 White", 
-          price: 2800, 
-          priceType: "м", 
-          desc: "Скрытая однорядная гардина АM1 White - Минималистичная белая гардина сливается с потолком для эффекта «парящих» штор и идеально используется в качестве аккуратного карниза в ванной комнате или гардеробной.", 
-          images: ["gardina2.jpg", "am1white.jpg"] 
-        }, 
-        { 
-          title: "Скрытый карниз Borzz Karniz 45 Black", 
-          price: 4750, 
-          priceType: "м", 
-          desc: "Скрытый карниз Borzz Karniz 45 Black - Готовое решение для глубокой ниши под шторы в черном исполнении, создающее контрастный переход и оснащенное встроенным пазом для LED-ленты, которая эффектно подсвечивает ниспадающий текстиль.", 
-          images: ["gborzzblack1.jpg", "gborzzblack2.jpg", "gborzzblack3.jpg"] 
-        }, 
-        { 
-          title: "Скрытый карниз Borzz Karniz 45 White", 
-          price: 4750, 
-          priceType: "м", 
-          desc: "Скрытый карниз Borzz Karniz 45 White - Функциональный белый карниз, сливающийся с полотном и позволяющий установить скрытую светодиодную ленту для мягкого атмосферного освещения шторной зоны.", 
-          images: ["gborzzwhite1.jpg", "gborzzwhite2.jpg", "gborzzwhite3.jpg"] 
-        }, 
-        { 
-          title: "Скрытый карниз Borzz Karniz P45 Black", 
-          price: 4750, 
-          priceType: "м", 
-          desc: "Скрытый карниз Borzz Karniz P45 Black - Черный П-образный профиль, создающий четкую утопленную нишу с безупречной геометрией, в которую интегрируется LED-подсветка для красивого акцентного свечения штор.", 
-          images: ["pborzzblack1.jpg", "pborzzblack2.jpg", "pborzzblack3.jpg"] 
-        }, 
-        { 
-          title: "Скрытый карниз Borzz Karniz P45 White", 
-          price: 4750, 
-          priceType: "м", 
-          desc: "Скрытый карниз Borzz Karniz P45 White - Белоснежный П-образный карниз, формирующий аккуратную строгую нишу в плоскости потолка и предусматривающий место для встроенной светодиодной ленты.", 
-          images: ["pborzzwhite1.jpg", "pborzzwhite2.jpg"] 
-        } 
-      ], 
-      lighting: [ 
-        { 
-          title: "Световая линия Flexy White", 
-          price: 3900, 
-          priceType: "м", 
-          desc: "Световая линия Flexy White - Универсальное световое решение, обеспечивающее мягкий, равномерный и достаточно яркий свет для комфортного основного или зонального освещения помещения.", 
-          images: ["svetlinewhite2.jpg", "svetlinewhite3.jpg"] 
-        }, 
-        { 
-          title: "Световая линия Flexy Black", 
-          price: 3900, 
-          priceType: "м", 
-          desc: "Световая линия Flexy Black - Стильный дизайнерский элемент, который в выключенном состоянии выглядит как строгая графичная черная полоса, а при включении дает мягкое, приглушенное и контрастное свечение.", 
-          images: ["svetline2.jpg", "svetline3.jpg"] 
-        } 
-      ] 
-    }; 
- 
-    var tg = window.Telegram ? window.Telegram.WebApp : null; 
-    if (tg && tg.expand) { tg.expand(); } 
- 
-    var selected = { 
-      canvas: { index: 0, price: catalog.canvas[0].price, type: catalog.canvas[0].priceType, title: catalog.canvas[0].title }, 
-      profile: { index: 0, price: catalog.profile[0].price, type: catalog.profile[0].priceType, title: catalog.profile[0].title }, 
-      curtains: { index: 0, price: catalog.curtains[0].price, type: catalog.curtains[0].priceType, title: catalog.curtains[0].title }, 
-      lighting: { index: 0, price: catalog.lighting[0].price, type: catalog.lighting[0].priceType, title: catalog.lighting[0].title } 
-    }; 
- 
-    var activeModalState = { category: null, itemIndex: 0, imageIndex: 0 }; 
- 
-    function initCatalog() { 
-      for (var cat in catalog) { 
-        renderCategory(cat); 
-      } 
-    } 
- 
-    function renderCategory(category) { 
-      var grid = document.getElementById('grid-' + category); 
-      if (!grid) return; 
-       
-      grid.innerHTML = ''; 
-      var items = catalog[category]; 
- 
-      for (var i = 0; i < items.length; i++) { 
-        var item = items[i]; 
-        var isSelected = (i === selected[category].index) ? 'selected' : ''; 
-        
-        var unitText = item.priceType === 'м2' ? ' / м²' : (item.priceType === 'м' ? ' / м' : '');
-        var priceText = item.price.toLocaleString('ru-RU') + ' ₽' + unitText; 
- 
-        var cube = document.createElement('div'); 
-        cube.className = 'option-cube ' + isSelected; 
-        cube.setAttribute('onclick', "selectAndOpenModal('" + category + "', " + i + ", this)"); 
-        cube.innerHTML =  
-          '<img src="' + item.images[0] + '" alt="" class="cube-img" onerror="this.style.display=\'none\'">' + 
-          '<div class="cube-body">' + 
-            '<div class="cube-title">' + item.title + '</div>' + 
-            '<div class="cube-price">' + priceText + '</div>' + 
-          '</div>'; 
-        grid.appendChild(cube); 
-      } 
-    } 
- 
-    function selectAndOpenModal(category, index, cubeElement) { 
-      var cubes = cubeElement.parentElement.querySelectorAll('.option-cube'); 
-      for (var i = 0; i < cubes.length; i++) { cubes[i].classList.remove('selected'); } 
-      cubeElement.classList.add('selected'); 
- 
-      var item = catalog[category][index]; 
-      selected[category] = { 
-        index: index, 
-        price: item.price, 
-        type: item.priceType, 
-        title: item.title 
-      }; 
- 
-      openModal(category, index); 
-    } 
- 
-    /* Логика Модального Окна */ 
-    function openModal(category, index) { 
-      activeModalState.category = category; 
-      activeModalState.itemIndex = index; 
-      activeModalState.imageIndex = 0; 
- 
-      updateModalView(); 
-      document.getElementById('modal-overlay').classList.add('active'); 
-    } 
- 
-    function closeModal() { 
-      document.getElementById('modal-overlay').classList.remove('active'); 
-    } 
- 
-    function closeModalOnOverlay(e) { 
-      if (e.target.id === 'modal-overlay') { 
-        closeModal(); 
-      } 
-    } 
- 
-    function updateModalView() { 
-      var item = catalog[activeModalState.category][activeModalState.itemIndex]; 
-      var imgIndex = activeModalState.imageIndex; 
-      var imgElement = document.getElementById('modal-img'); 
- 
-      document.getElementById('modal-title').innerText = item.title; 
-      document.getElementById('modal-desc').innerText = item.desc; 
-       
-      if (item.images && item.images.length > 0) { 
-        imgElement.src = item.images[imgIndex] || item.images[0]; 
-        imgElement.style.display = 'block'; 
-      } else { 
-        imgElement.style.display = 'none'; 
-      } 
-    } 
- 
-    function slideModalImage(direction) { 
-      var images = catalog[activeModalState.category][activeModalState.itemIndex].images; 
-      if (!images || images.length === 0) return; 
- 
-      activeModalState.imageIndex += direction; 
- 
-      if (activeModalState.imageIndex >= images.length) { 
-        activeModalState.imageIndex = 0; 
-      } else if (activeModalState.imageIndex < 0) { 
-        activeModalState.imageIndex = images.length - 1; 
-      } 
- 
-      updateModalView(); 
-    } 
- 
-    function switchTab(tabId, btnElement) { 
-      var contents = document.querySelectorAll('.tab-content'); 
-      for (var i = 0; i < contents.length; i++) { contents[i].classList.remove('active'); } 
-      var btns = document.querySelectorAll('.tab-btn'); 
-      for (var i = 0; i < btns.length; i++) { btns[i].classList.remove('active'); } 
-       
-      document.getElementById(tabId).classList.add('active'); 
-      btnElement.classList.add('active'); 
-    } 
+    canvas: [
+        {
+            title: "Матовое",
+            price: 370,
+            priceType: "м2",
+            desc: "Матовый натяжной потолок дарит помещению классический уют, безупречно имитируя идеально оштукатуренную поверхность без нежелательных бликов.",
+            images: ["mat.jpg"]
+        },
+        {
+            title: "Глянцевое",
+            price: 380,
+            priceType: "м2",
+            desc: "Глянцевый натяжной потолок визуально расширяет пространство и наполняет комнату светом.",
+            images: ["glyanec.jpg"]
+        }
+    ],
 
-    function goToTab(tabId, btnIndex) {
-      var btns = document.querySelectorAll('.tab-btn');
-      if (btns[btnIndex]) {
-        switchTab(tabId, btns[btnIndex]);
-      }
-    } 
+    profile: [
+        {
+            title: "Классическое примыкание",
+            price: 740,
+            priceType: "м",
+            desc: "Универсальное и бюджетное решение с аккуратным переходом от потолка к стене.",
+            images: ["bagetal3.jpg", "bagetal2.jpg", "bagetplastik2.jpg"]
+        },
+        {
+            title: "Теневое примыкание (Bizon)",
+            price: 1200,
+            priceType: "м",
+            desc: "Профиль формирует аккуратный теневой зазор и визуально отделяет потолок от стены.",
+            images: ["bizon1.jpg"]
+        },
+        {
+            title: "Теневое примыкание (EuroKRAAB)",
+            price: 2500,
+            priceType: "м",
+            desc: "Ровная линия периметра и четкие графичные углы под 90°.",
+            images: ["eurokraab2.jpg", "eurokraab1.jpg"]
+        },
+        {
+            title: "Парящее примыкание (Contour Pro Led Black)",
+            price: 3000,
+            priceType: "м",
+            desc: "Черный профиль с интегрированной светодиодной подсветкой создает эффект парящего потолка.",
+            images: ["contourproledblack2.jpg", "contourproledblack3.jpg", "contourproledblack4.jpg"]
+        },
+        {
+            title: "Парящее примыкание (Contour Pro Led White)",
+            price: 3000,
+            priceType: "м",
+            desc: "Белый профиль с мягкой светодиодной подсветкой по периметру.",
+            images: ["contourproledwhite2.jpg", "contourproledwhite3.jpg"]
+        }
+    ],
 
-    initCatalog(); 
-</script> 
-</body> 
+    curtains: [
+        {
+            title: "Скрытый однорядный карниз АМ1 Black",
+            price: 2800,
+            priceType: "м",
+            desc: "Лаконичный черный профиль для скрытого монтажа штор.",
+            images: ["gardinablack5.jpg", "am1black1.jpg", "gardinablack3.jpg"]
+        },
+        {
+            title: "Скрытый однорядный карниз АМ1 White",
+            price: 2800,
+            priceType: "м",
+            desc: "Минималистичный белый карниз, сливающийся с потолком.",
+            images: ["gardina2.jpg", "am1white.jpg"]
+        },
+        {
+            title: "Скрытый карниз Borzz Karniz 45 Black",
+            price: 4750,
+            priceType: "м",
+            desc: "Глубокая ниша под шторы в черном исполнении.",
+            images: ["gborzzblack1.jpg", "gborzzblack2.jpg", "gborzzblack3.jpg"]
+        },
+        {
+            title: "Скрытый карниз Borzz Karniz 45 White",
+            price: 4750,
+            priceType: "м",
+            desc: "Белый карниз со скрытой светодиодной подсветкой.",
+            images: ["gborzzwhite1.jpg", "gborzzwhite2.jpg", "gborzzwhite3.jpg"]
+        },
+        {
+            title: "Скрытый карниз Borzz Karniz P45 Black",
+            price: 4750,
+            priceType: "м",
+            desc: "Черный П-образный профиль с возможностью интеграции LED-подсветки.",
+            images: ["pborzzblack1.jpg", "pborzzblack2.jpg", "pborzzblack3.jpg"]
+        },
+        {
+            title: "Скрытый карниз Borzz Karniz P45 White",
+            price: 4750,
+            priceType: "м",
+            desc: "Белый П-образный карниз для аккуратной скрытой ниши.",
+            images: ["pborzzwhite1.jpg", "pborzzwhite2.jpg"]
+        }
+    ],
+
+    lighting: [
+        {
+            title: "Световая линия Flexy White",
+            price: 3900,
+            priceType: "м",
+            desc: "Мягкий и равномерный свет для основного или зонального освещения.",
+            images: ["svetlinewhite2.jpg", "svetlinewhite3.jpg"]
+        },
+        {
+            title: "Световая линия Flexy Black",
+            price: 3900,
+            priceType: "м",
+            desc: "Контрастная черная световая линия для современного интерьера.",
+            images: ["svetline2.jpg", "svetline3.jpg"]
+        }
+    ],
+
+    solutions: [
+        {
+            title: "Зал",
+            price: 0,
+            priceType: "",
+            desc: "Готовое решение для зала.",
+            images: []
+        },
+        {
+            title: "Коридор",
+            price: 0,
+            priceType: "",
+            desc: "Готовое решение для коридора.",
+            images: []
+        },
+        {
+            title: "Ванная комната",
+            price: 30000,
+            priceType: "под ключ",
+            desc: "Готовый проект ванной комнаты.",
+            images: [
+                { url: "vanna1.jpg", text: "Общий вид ванной комнаты." },
+                { url: "vanna2.jpg", text: "Зона скрытого карниза." },
+                { url: "vanna3.jpg", text: "Детализированный узел." },
+                { url: "vanna4.jpg", text: "Финальный результат." }
+            ]
+        },
+        {
+            title: "Кухня",
+            price: 0,
+            priceType: "",
+            desc: "Готовое решение для кухни.",
+            images: []
+        },
+        {
+            title: "Спальня",
+            price: 0,
+            priceType: "",
+            desc: "Готовое решение для спальни.",
+            images: []
+        }
+    ]
+
+};
+
+
+/* ======================================================
+   НАЗВАНИЯ КАТЕГОРИЙ
+====================================================== */
+
+var categoryNames = {
+    canvas: { title: "Полотно", subtitle: "Выберите тип полотна" },
+    profile: { title: "Примыкание", subtitle: "Выберите тип профиля" },
+    curtains: { title: "Карнизы", subtitle: "Выберите решение для штор" },
+    lighting: { title: "Свет", subtitle: "Выберите световое решение" },
+    solutions: { title: "Готовые решения", subtitle: "Готовые проекты по помещениям" }
+};
+
+
+/* ======================================================
+   СОСТОЯНИЕ
+====================================================== */
+
+var selected = {
+    canvas: 0,
+    profile: 0,
+    curtains: 0,
+    lighting: 0,
+    solutions: 0
+};
+
+var activeModalState = {
+    category: null,
+    itemIndex: 0,
+    imageIndex: 0
+};
+
+
+/* ======================================================
+   НАВИГАЦИЯ ПО ЭКРАНАМ
+====================================================== */
+
+function showScreen(id) {
+    var screens = document.querySelectorAll(".screen");
+    for (var i = 0; i < screens.length; i++) {
+        screens[i].classList.remove("active");
+    }
+    document.getElementById(id).classList.add("active");
+    window.scrollTo(0, 0);
+}
+
+function goHome() {
+    showScreen("screen-home");
+}
+
+function openSelection() {
+    showScreen("screen-selection");
+}
+
+function backToSelection() {
+    showScreen("screen-selection");
+}
+
+
+/* ======================================================
+   КАТАЛОГ
+====================================================== */
+
+function openCatalog(category) {
+    renderCatalog(category);
+    showScreen("screen-catalog");
+}
+
+function renderCatalog(category) {
+    var grid = document.getElementById("catalog-grid");
+    grid.innerHTML = "";
+
+    var data = catalog[category];
+    var info = categoryNames[category];
+
+    document.getElementById("catalog-title").innerText = info.title;
+    document.getElementById("catalog-subtitle").innerText = info.subtitle;
+
+    for (var i = 0; i < data.length; i++) {
+        var item = data[i];
+        var card = document.createElement("div");
+
+        card.className = "catalog-card";
+
+        if (selected[category] === i) {
+            card.classList.add("selected");
+        }
+
+        var image = "";
+        if (item.images && item.images.length) {
+            if (typeof item.images[0] === "object") {
+                image = item.images[0].url;
+            } else {
+                image = item.images[0];
+            }
+        }
+
+        var price = "";
+        if (item.price > 0) {
+            if (item.priceType === "м2") {
+                price = item.price.toLocaleString("ru-RU") + " ₽ / м²";
+            } else if (item.priceType === "м") {
+                price = item.price.toLocaleString("ru-RU") + " ₽ / м";
+            } else if (item.priceType === "под ключ") {
+                price = item.price.toLocaleString("ru-RU") + " ₽ под ключ";
+            }
+        } else {
+            price = "По запросу";
+        }
+
+        card.innerHTML =
+            '<img src="' + image + '" class="catalog-img" onerror="this.style.display=\'none\'">' +
+            '<div class="catalog-body">' +
+                '<div class="catalog-title">' + item.title + '</div>' +
+                '<div class="catalog-price">' + price + '</div>' +
+            '</div>';
+
+        card.onclick = function(cat, index) {
+            return function() {
+                selected[cat] = index;
+                renderCatalog(cat);
+                openModal(cat, index);
+            };
+        }(category, i);
+
+        grid.appendChild(card);
+    }
+}
+
+
+/* ======================================================
+   МОДАЛЬНОЕ ОКНО
+====================================================== */
+
+function openModal(category, index) {
+    activeModalState.category = category;
+    activeModalState.itemIndex = index;
+    activeModalState.imageIndex = 0;
+
+    updateModalView();
+
+    document.getElementById("modal-overlay").classList.add("active");
+}
+
+function closeModal() {
+    document.getElementById("modal-overlay").classList.remove("active");
+}
+
+function closeModalOnOverlay(e) {
+    if (e.target.id === "modal-overlay") {
+        closeModal();
+    }
+}
+
+function updateModalView() {
+    var state = activeModalState;
+    var item = catalog[state.category][state.itemIndex];
+
+    var image = document.getElementById("modal-img");
+    var title = document.getElementById("modal-title");
+    var desc = document.getElementById("modal-desc");
+
+    title.innerText = item.title;
+
+    if (item.images && item.images.length > 0) {
+        var current = item.images[state.imageIndex];
+
+        if (typeof current === "object") {
+            image.src = current.url;
+            desc.innerText = current.text;
+        } else {
+            image.src = current;
+            desc.innerText = item.desc;
+        }
+
+        image.style.display = "block";
+    } else {
+        image.style.display = "none";
+        desc.innerText = item.desc;
+    }
+}
+
+function slideModalImage(direction) {
+    var images = catalog[activeModalState.category][activeModalState.itemIndex].images;
+
+    if (!images || !images.length) return;
+
+    activeModalState.imageIndex += direction;
+
+    if (activeModalState.imageIndex >= images.length) {
+        activeModalState.imageIndex = 0;
+    }
+
+    if (activeModalState.imageIndex < 0) {
+        activeModalState.imageIndex = images.length - 1;
+    }
+
+    updateModalView();
+}
+
+
+/* ======================================================
+   КОНСУЛЬТАЦИЯ
+====================================================== */
+
+function contactManager() {
+    if (tg && tg.sendData) {
+        tg.sendData(JSON.stringify({ action: "consultation" }));
+    } else {
+        alert("Консультация специалиста");
+    }
+}
+
+</script>
+
+</body>
 </html>
