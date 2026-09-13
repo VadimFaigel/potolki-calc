@@ -149,7 +149,7 @@ button {
 }
 
 .hero {
-    height: 300px;
+    height: 280px;
     border-radius: 24px;
     overflow: hidden;
     position: relative;
@@ -173,7 +173,7 @@ button {
     flex-direction: column;
     justify-content: flex-end;
     padding: 20px 20px 18px 20px;
-    background: linear-gradient(180deg, rgba(255,255,255,0) 25%, rgba(255,255,255,0.8) 65%, rgba(255,255,255,1) 90%);
+    background: linear-gradient(180deg, rgba(255,255,255,0) 20%, rgba(255,255,255,0.8) 60%, rgba(255,255,255,1) 90%);
     color: var(--text);
 }
 
@@ -271,7 +271,7 @@ button {
 
 
 /* =========================
-   SELECTION SCREEN (Что выбираем?)
+   SELECTION SCREEN
 ========================= */
 
 .selection {
@@ -310,15 +310,15 @@ button {
     transform: scale(0.95);
 }
 
-.selection .header-title {
-    font-size: 22px;
+.screen-header .header-title {
+    font-size: 20px;
     font-weight: 800;
 }
 
-.selection .header-subtitle {
+.screen-header .header-subtitle {
     color: var(--muted);
     font-size: 12px;
-    margin-top: 3px;
+    margin-top: 2px;
 }
 
 .progress {
@@ -432,7 +432,7 @@ button {
     border-radius: 16px;
     overflow: hidden;
     cursor: pointer;
-    position: relative; /* Обязательно для позиционирования бейджа */
+    position: relative;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03), 0 1px 3px rgba(0, 0, 0, 0.05);
     transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, border-color 0.2s ease;
 }
@@ -451,7 +451,6 @@ button {
     transform: scale(0.97) translateY(0);
 }
 
-/* Микроанимация Checkmark Badge */
 .catalog-card .card-badge {
     position: absolute;
     top: 8px;
@@ -502,6 +501,140 @@ button {
     color: var(--accent);
     font-size: 13px;
     font-weight: 800;
+}
+
+
+/* =========================
+   FAQ SCREEN (ЧАСТЫЕ ВОПРОСЫ)
+========================= */
+
+.faq-screen {
+    padding: 20px 16px 30px;
+}
+
+.faq-tabs {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.faq-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.tab-btn {
+    padding: 9px 16px;
+    border-radius: 20px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    color: var(--muted);
+    transition: all 0.2s ease;
+}
+
+.tab-btn.active {
+    background: var(--accent);
+    color: #ffffff;
+    border-color: var(--accent);
+}
+
+.faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.faq-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    overflow: hidden;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.faq-item.open {
+    border-color: var(--accent);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+}
+
+.faq-question {
+    padding: 16px;
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    gap: 12px;
+    color: var(--text);
+}
+
+.faq-icon {
+    font-size: 13px;
+    color: var(--muted);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.faq-item.open .faq-icon {
+    transform: rotate(180deg);
+    color: var(--accent);
+}
+
+.faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+    padding: 0 16px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #555;
+}
+
+.faq-item.open .faq-answer {
+    max-height: 400px;
+    padding: 0 16px 16px 16px;
+}
+
+.faq-ask-card {
+    margin-top: 24px;
+    background: var(--accent-bg);
+    border: 1px dashed var(--accent);
+    border-radius: 20px;
+    padding: 18px;
+    text-align: center;
+}
+
+.faq-ask-card h3 {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--accent);
+}
+
+.faq-ask-card p {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 14px;
+    line-height: 1.4;
+}
+
+.faq-ask-btn {
+    width: 100%;
+    height: 46px;
+    background: var(--accent);
+    color: white;
+    border-radius: 14px;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
 
@@ -557,7 +690,6 @@ button {
     object-fit: cover;
 }
 
-/* Стили для индикатора фотографий (точки/палочки) */
 .slider-dots {
     position: absolute;
     bottom: 12px;
@@ -706,7 +838,6 @@ button {
         <div class="home">
 
             <div class="hero">
-                <!-- Картинка на главном экране -->
                 <img src="glavnaya.jpg" class="hero-image" alt="Потолок" onerror="this.style.display='none'">
 
                 <div class="hero-content">
@@ -726,30 +857,30 @@ button {
                 </div>
             </div>
 
-            <!-- Кнопка «Открыть каталог» с иконкой ползунков настройки -->
+            <!-- Кнопка «Открыть каталог» -->
             <button class="primary" onclick="openSelection()">
                 <span><i class="fa-solid fa-sliders"></i> &nbsp; Открыть каталог</span>
                 <span>→</span>
             </button>
 
-            <!-- Кнопка «Рассчитать стоимость» с иконкой калькулятора -->
+            <!-- Кнопка «Рассчитать стоимость» -->
             <button class="menu-button" onclick="openSelection()">
                 <span class="menu-icon"><i class="fa-solid fa-calculator"></i></span>
                 Рассчитать стоимость
                 <span class="menu-arrow">→</span>
             </button>
 
-            <!-- Кнопка «Мои проекты» с иконкой папки -->
-            <button class="menu-button" onclick="alert('Раздел в разработке')">
-                <span class="menu-icon"><i class="fa-regular fa-folder-open"></i></span>
-                Мои проекты
+            <!-- Кнопка «Частые вопросы» -->
+            <button class="menu-button" onclick="openFaq()">
+                <span class="menu-icon"><i class="fa-regular fa-comments"></i></span>
+                Частые вопросы
                 <span class="menu-arrow">→</span>
             </button>
 
-            <!-- Кнопка «Помощь» с иконкой вопроса в кружке -->
+            <!-- Кнопка «Связаться с мастером» -->
             <button class="menu-button" onclick="contactManager()">
                 <span class="menu-icon"><i class="fa-regular fa-circle-question"></i></span>
-                Помощь
+                Связаться с мастером
                 <span class="menu-arrow">→</span>
             </button>
 
@@ -784,7 +915,6 @@ button {
 
             <div class="choice-grid">
 
-                <!-- ПОЛОТНО -->
                 <div class="choice-card" onclick="openCatalog('canvas')">
                     <img src="mat.jpg" class="choice-image" onerror="this.style.display='none'">
                     <div class="choice-body">
@@ -794,7 +924,6 @@ button {
                     <div class="choice-arrow">→</div>
                 </div>
 
-                <!-- КАРНИЗ -->
                 <div class="choice-card" onclick="openCatalog('curtains')">
                     <img src="gardinablack5.jpg" class="choice-image" onerror="this.style.display='none'">
                     <div class="choice-body">
@@ -804,7 +933,6 @@ button {
                     <div class="choice-arrow">→</div>
                 </div>
 
-                <!-- ПРИМЫКАНИЕ -->
                 <div class="choice-card" onclick="openCatalog('profile')">
                     <img src="bizon1.jpg" class="choice-image" onerror="this.style.display='none'">
                     <div class="choice-body">
@@ -814,7 +942,6 @@ button {
                     <div class="choice-arrow">→</div>
                 </div>
 
-                <!-- СВЕТ -->
                 <div class="choice-card" onclick="openCatalog('lighting')">
                     <img src="svetlinewhite2.jpg" class="choice-image" onerror="this.style.display='none'">
                     <div class="choice-body">
@@ -824,7 +951,6 @@ button {
                     <div class="choice-arrow">→</div>
                 </div>
 
-                <!-- ГОТОВЫЕ РЕШЕНИЯ -->
                 <div class="choice-card full" onclick="openCatalog('solutions')">
                     <img src="vanna1.jpg" class="choice-image" onerror="this.style.display='none'">
                     <div class="choice-body">
@@ -867,6 +993,155 @@ button {
 
 
     <!-- ======================================================
+         ЭКРАН FAQ (ЧАСТЫЕ ВОПРОСЫ)
+    ====================================================== -->
+
+    <section id="screen-faq" class="screen">
+
+        <div class="faq-screen">
+
+            <div class="screen-header">
+                <button class="back-btn" onclick="goHome()">←</button>
+                <div>
+                    <div class="header-title">Частые вопросы</div>
+                    <div class="header-subtitle">Ответы на популярные вопросы</div>
+                </div>
+            </div>
+
+            <!-- Табы фильтрации -->
+            <div class="faq-tabs">
+                <button class="tab-btn active" onclick="filterFaq('all', this)">Все</button>
+                <button class="tab-btn" onclick="filterFaq('prep', this)">Подготовка</button>
+                <button class="tab-btn" onclick="filterFaq('tech', this)">Свет и техника</button>
+                <button class="tab-btn" onclick="filterFaq('care', this)">Уход и ЧП</button>
+                <button class="tab-btn" onclick="filterFaq('terms', this)">Сроки и замер</button>
+            </div>
+
+            <!-- Список вопросов -->
+            <div class="faq-list">
+
+                <!-- Категория: Подготовка -->
+                <div class="faq-item" data-category="prep">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>Когда ставить потолок: до или после обоев?</span>
+                        <i class="fa-solid fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Оптимально — после выравнивания стен, но до поклейки чистовых обоев (либо когда обои высохнут через 3-4 дня). Мы используем чистый монтаж с пылеудалением, поэтому стены остаются чистыми.
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="prep">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>Нужно ли выносить всю мебель из комнаты?</span>
+                        <i class="fa-solid fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Всю мебель выносить не нужно. Достаточно отодвинуть крупную мебель от стен на 1–1.5 метра для доступа по периметру и убрать мелкие предметы, цветы и технику.
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="prep">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>Как подготовить базовый потолок?</span>
+                        <i class="fa-solid fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Главное — удалить куски отслаивающейся старой штукатурки или краски, которые могут осыпаться на полотно сверху. Заделывать мелкие трещины не требуется.
+                    </div>
+                </div>
+
+                <!-- Категория: Свет и техника -->
+                <div class="faq-item" data-category="tech">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>На сколько сантиметров опустится потолок?</span>
+                        <i class="fa-solid fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Минимальный опуск — всего 4–5 см (толщина профиля). Если устанавливаются светильники, скрытые карнизы или треки, опуск составит от 7 до 10 см.
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="tech">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>Могу ли я купить свои светильники?</span>
+                        <i class="fa-solid fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Да, вы можете купить свои люстры и споты. Главное — передать их или их точные размеры до начала монтажа для установки правильных закладных платформ.
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="tech">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>Будет ли неприятный запах после установки?</span>
+                        <i class="fa-solid fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Качественные сертифицированные полотна имеют легкий запах при нагреве, который полностью исчезает после проветривания помещения в течение 12–24 часов.
+                    </div>
+                </div>
+
+                <!-- Категория: Уход и ЧП -->
+                <div class="faq-item" data-category="care">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>Что делать, если соседи сверху зальют водой?</span>
+                        <i class="fa-solid fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Полотно удерживает до 100 л воды на м². Обесточьте освещение и сразу звоните нам: мы аккуратно сливаем воду, просушим пространство и вернем потолку прежний вид.
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="care">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>Как правильно мыть натяжной потолок?</span>
+                        <i class="fa-solid fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Достаточно протирать влажной салфеткой из микрофибры с мыльным раствором или средством для стекол без спирта. Ацетон и жесткие щетки использовать нельзя!
+                    </div>
+                </div>
+
+                <!-- Категория: Сроки и замер -->
+                <div class="faq-item" data-category="terms">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>Сколько времени занимает монтаж?</span>
+                        <i class="fa-solid fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Установка потолка в комнате 15–20 м² со стандартным светом занимает около 3–5 часов. Сложные системы с треками и световыми линиями могут занять 1–2 дня.
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="terms">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>Как проходит замер и сколько он стоит?</span>
+                        <i class="fa-solid fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Замер абсолютно бесплатный. Мастер приезжает с образцами полотен и каталогами профилей, выполняет лазерный замер и сразу дает точную итоговую смету.
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Блок если не нашли ответ -->
+            <div class="faq-ask-card">
+                <h3>Не нашли ответ на свой вопрос?</h3>
+                <p>Напишите напрямую мастеру — проконсультируем и подскажем решение для вашего случая.</p>
+                <button class="faq-ask-btn" onclick="contactManager()">
+                    <i class="fa-regular fa-paper-plane"></i> Задать вопрос мастеру
+                </button>
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ======================================================
          МОДАЛЬНОЕ ОКНО
     ====================================================== -->
 
@@ -879,7 +1154,6 @@ button {
                 <img id="modal-img" class="modal-img" src="" alt="" onerror="this.style.display='none'">
                 <button class="slider-btn next" onclick="slideModalImage(1)">›</button>
                 
-                <!-- Индикатор фотографий (точки/палочки) -->
                 <div id="slider-dots" class="slider-dots"></div>
             </div>
 
@@ -926,7 +1200,7 @@ var catalog = {
             price: 380,
             priceType: "м2",
             desc: "Глянцевый натяжной потолок визуально расширяет пространство и наполняет комнату светом.",
-            images: ["glyanec.jpg"]
+            images: ["glyanec.jpg", "glyanec2.jpg", "glyanec3.jpg"]
         }
     ],
 
@@ -1133,6 +1407,10 @@ function backToSelection() {
     showScreen("screen-selection");
 }
 
+function openFaq() {
+    showScreen("screen-faq");
+}
+
 
 /* ======================================================
    КАТАЛОГ
@@ -1193,15 +1471,52 @@ function renderCatalog(category) {
                 '<div class="catalog-price">' + price + '</div>' +
             '</div>';
 
-        card.onclick = function(cat, index) {
+        card.onclick = (function(cat, index) {
             return function() {
                 selected[cat] = index;
                 renderCatalog(cat);
                 openModal(cat, index);
             };
-        }(category, i);
+        })(category, i);
 
         grid.appendChild(card);
+    }
+}
+
+
+/* ======================================================
+   FAQ И ЛОГИКА АККОРДЕОНА
+====================================================== */
+
+function toggleFaq(element) {
+    var item = element.parentElement;
+    var isOpen = item.classList.contains("open");
+    
+    var allItems = document.querySelectorAll(".faq-item");
+    for (var i = 0; i < allItems.length; i++) {
+        allItems[i].classList.remove("open");
+    }
+    
+    if (!isOpen) {
+        item.classList.add("open");
+    }
+}
+
+function filterFaq(category, btnElement) {
+    var tabs = document.querySelectorAll(".tab-btn");
+    for (var i = 0; i < tabs.length; i++) {
+        tabs[i].classList.remove("active");
+    }
+    btnElement.classList.add("active");
+
+    var items = document.querySelectorAll(".faq-item");
+    for (var j = 0; j < items.length; j++) {
+        var item = items[j];
+        if (category === "all" || item.getAttribute("data-category") === category) {
+            item.style.display = "block";
+        } else {
+            item.style.display = "none";
+        }
     }
 }
 
@@ -1257,7 +1572,6 @@ function updateModalView() {
 
         image.style.display = "block";
 
-        // Если фотографий больше одной — показываем стрелки и точки
         if (item.images.length > 1) {
             if (prevBtn) prevBtn.style.display = "flex";
             if (nextBtn) nextBtn.style.display = "flex";
@@ -1270,7 +1584,6 @@ function updateModalView() {
                     dot.classList.add("active");
                 }
                 
-                // Делаем точки кликабельными для переключения фото
                 dot.onclick = (function(idx) {
                     return function() {
                         activeModalState.imageIndex = idx;
@@ -1281,7 +1594,6 @@ function updateModalView() {
                 dotsContainer.appendChild(dot);
             }
         } else {
-            // Если фото всего одно — прячем стрелки и точки
             if (prevBtn) prevBtn.style.display = "none";
             if (nextBtn) nextBtn.style.display = "none";
             dotsContainer.style.display = "none";
