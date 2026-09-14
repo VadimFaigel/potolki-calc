@@ -11,7 +11,6 @@
 
 <title>Потолки PRO</title>
 
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <!-- Подключение библиотеки иконок FontAwesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -691,7 +690,7 @@ button {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    pointer-events: none; /* Запрет перетягивания файла изображения */
+    pointer-events: none;
 }
 
 .slider-dots {
@@ -828,7 +827,7 @@ button {
         <div class="logo">⌂</div>
         <div>
             <div class="header-title">Потолки PRO</div>
-            <div class="header-subtitle">Бот для выбора потолков</div>
+            <div class="header-subtitle">Выбор потолков и решений</div>
         </div>
     </header>
 
@@ -1171,17 +1170,6 @@ button {
 
 
 <script>
-
-/* ======================================================
-   TELEGRAM WEB APP
-====================================================== */
-
-var tg = window.Telegram ? window.Telegram.WebApp : null;
-
-if (tg && tg.expand) {
-    tg.expand();
-}
-
 
 /* ======================================================
    КАТАЛОГ ДАННЫХ
@@ -1692,15 +1680,12 @@ sliderElem.addEventListener("touchend", function(e) {
 function handleModalSwipe() {
     var diffX = touchEndX - touchStartX;
     var diffY = touchEndY - touchStartY;
-    var minSwipeDistance = 40; // минимальное расстояние для свайпа в пикселях
+    var minSwipeDistance = 40;
 
-    // Проверяем, что движение было именно горизонтальным (не вертикальный скролл)
     if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > minSwipeDistance) {
         if (diffX < 0) {
-            // Свайп влево — следующий кадр
             slideModalImage(1);
         } else {
-            // Свайп вправо — предыдущий кадр
             slideModalImage(-1);
         }
     }
@@ -1708,14 +1693,18 @@ function handleModalSwipe() {
 
 
 /* ======================================================
-   КОНСУЛЬТАЦИЯ
+   КОНСУЛЬТАЦИЯ В MAX
 ====================================================== */
 
 function contactManager() {
-    if (tg && tg.sendData) {
-        tg.sendData(JSON.stringify({ action: "consultation" }));
+    var payload = JSON.stringify({ action: "consultation" });
+
+    if (window.WebApp && typeof window.WebApp.sendData === "function") {
+        window.WebApp.sendData(payload);
+    } else if (window.WebApp && typeof window.WebApp.openLink === "function") {
+        window.WebApp.openLink("https://max.ru/");
     } else {
-        alert("Консультация специалиста");
+        alert("Запрос мастеру отправлен!");
     }
 }
 
