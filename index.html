@@ -783,11 +783,25 @@ button {
     padding: 18px;
 }
 
+.modal-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
 .modal-title {
     color: var(--text);
     font-size: 17px;
     font-weight: 800;
-    margin-bottom: 8px;
+}
+
+.modal-price {
+    color: var(--accent);
+    font-size: 15px;
+    font-weight: 800;
+    white-space: nowrap;
 }
 
 .modal-desc {
@@ -1159,7 +1173,10 @@ button {
             </div>
 
             <div class="modal-content">
-                <div id="modal-title" class="modal-title"></div>
+                <div class="modal-header-row">
+                    <div id="modal-title" class="modal-title"></div>
+                    <div id="modal-price" class="modal-price"></div>
+                </div>
                 <div id="modal-desc" class="modal-desc"></div>
             </div>
         </div>
@@ -1235,44 +1252,44 @@ var catalog = {
     curtains: [
         {
             title: "Скрытый однорядный карниз АМ1 Black",
-            price: 2800,
-            priceType: "м",
-            desc: "Лаконичный черный профиль для скрытого монтажа штор.",
+            price: 4500,
+            priceType: "под ключ",
+            desc: "Указанная цена за карниз до 1,6 м, свыше цена 9000",
             images: ["gardinablack5.webp", "am1black1.webp", "gardinablack3.webp"]
         },
         {
             title: "Скрытый однорядный карниз АМ1 White",
-            price: 2800,
-            priceType: "м",
-            desc: "Минималистичный белый карниз, сливающийся с потолком.",
+            price: 4500,
+            priceType: "под ключ",
+            desc: "Указанная цена за карниз до 1,6 м, свыше цена 9000",
             images: ["gardina2.webp", "am1white.webp"]
         },
         {
-            title: "Скрытый карниз Borzz Karniz 45 Black",
-            price: 4750,
-            priceType: "м",
-            desc: "Глубокая ниша под шторы в черном исполнении.",
+            title: "Скрытый карниз Borzz Karniz 45 Black с подсветкой",
+            price: 14900,
+            priceType: "под ключ",
+            desc: "Указанная цена за карниз до 2,2 м, свыше цена 19500",
             images: ["gborzzblack1.webp", "gborzzblack2.webp", "gborzzblack3.webp"]
         },
         {
-            title: "Скрытый карниз Borzz Karniz 45 White",
-            price: 4750,
-            priceType: "м",
-            desc: "Белый карниз со скрытой светодиодной подсветкой.",
+            title: "Скрытый карниз Borzz Karniz 45 White с подсветкой",
+            price: 14900,
+            priceType: "под ключ",
+            desc: "Указанная цена за карниз до 2,2 м, свыше цена 19500",
             images: ["gborzzwhite1.webp", "gborzzwhite2.webp", "gborzzwhite3.webp"]
         },
         {
-            title: "Скрытый карниз Borzz Karniz P45 Black",
-            price: 4750,
-            priceType: "м",
-            desc: "Черный П-образный профиль с возможностью интеграции LED-подсветки.",
+            title: "Скрытый карниз Borzz Karniz P45 Black с подсветкой",
+            price: 14900,
+            priceType: "под ключ",
+            desc: "Указанная цена за карниз до 2,2 м, свыше цена 19500",
             images: ["pborzzblack1.webp", "pborzzblack2.webp", "pborzzblack3.webp"]
         },
         {
-            title: "Скрытый карниз Borzz Karniz P45 White",
-            price: 4750,
-            priceType: "м",
-            desc: "Белый П-образный карниз для аккуратной скрытой ниши.",
+            title: "Скрытый карниз Borzz Karniz P45 White с подсветкой",
+            price: 14900,
+            priceType: "под ключ",
+            desc: "Указанная цена за карниз до 2,2 м, свыше цена 19500",
             images: ["pborzzwhite1.webp", "pborzzwhite2.webp"]
         }
     ],
@@ -1280,88 +1297,95 @@ var catalog = {
     lighting: [
         {
             title: "Световая линия Flexy Black",
-            price: 3900,
+            price: 4700,
             priceType: "м",
-            desc: "Контрастная черная световая линия для современного интерьера.",
+            desc: "Контрастная черная световая линия для современного интерьера. Каждый следующий метр считается по 4200",
             images: ["svetline2.webp", "svetline3.webp"]
         },        
         {
             title: "Световая линия Flexy White",
-            price: 3900,
+            price: 4700,
             priceType: "м",
-            desc: "Мягкий и равномерный свет для основного или зонального освещения.",
+            desc: "Мягкий и равномерный свет для основного или зонального освещения. Каждый следующий метр считается по 4200",
             images: ["svetlinewhite2.webp", "svetlinewhite3.webp"]
         },
         {
             title: "Накладной трек Black",
-            price: 4200,
+            price: 3950,
             priceType: "м",
             desc: "Черная накладная трековая система - Выразительный черный цвет подчеркивает геометрию пространства и добавляет интерьеру стильный акцент. Удобная регулировка светильников вдоль шины дает возможность гибко настраивать освещение. В стоимость уже входит шинопровод и два светильника.",
             images: ["nbtrek1.webp", "nbtrek2.webp", "nbtrek3.webp"]
         },
         {
             title: "Накладной трек White",
-            price: 4200,
+            price: 3950,
             priceType: "м",
             desc: "Белая накладная трековая система - Лаконичный белый корпус визуально растворяется на потолке и мягко вписывается в светлый интерьер. Поворотные споты легко регулируются, позволяя направить свет в нужную зону. В стоимость уже входит шинопровод и два светильника.",
             images: ["nwtrek1.webp", "nwtrek2.webp", "nwtrek3.webp"]
         },
         {
             title: "Встраиваемый трек Black",
-            price: 4200,
+            price: 5700,
             priceType: "м",
-            desc: "Мягкий и равномерный свет для основного или зонального освещения.",
-            images: ["svetlinewhite2.webp", "svetlinewhite3.webp"]
+            desc: "Мягкий и равномерный свет для основного или зонального освещения. Каждый следующий метр считается по 5200",
+            images: ["vstroentrek1.webp", "vstroentrek2.webp", "vstroentrek3.webp"]
         },
         {
             title: "Встраиваемый трек White",
-            price: 4200,
+            price: 5700,
             priceType: "м",
-            desc: "Мягкий и равномерный свет для основного или зонального освещения.",
-            images: ["svetlinewhite2.webp", "svetlinewhite3.webp"]
+            desc: "Мягкий и равномерный свет для основного или зонального освещения. Каждый следующий метр считается по 4200",
+            images: ["vstroentrekw1.webp", "vstroentrekw2.webp", "vstroentrekw3.webp"]
         }
     ],
 
     solutions: [
         {
             title: "Зал",
-            price: 0,
-            priceType: "",
-            desc: "Готовое решение для зала.",
-            images: []
+            price: 35000,
+            priceType: "под ключ",
+            desc: "Готовые решения для гостиных и залов.",
+            images: ["zal1.webp", "zal2.webp", "zal3.webp", "zal4.webp", "zal5.webp"]
         },
         {
             title: "Коридор",
-            price: 0,
-            priceType: "",
-            desc: "Готовое решение для коридора.",
-            images: []
+            price: 18000,
+            priceType: "под ключ",
+            desc: "Элегантные решения для прихожих и коридоров.",
+            images: ["koridor1.webp", "koridor2.webp", "koridor3.webp", "koridor4.webp", "koridor5.webp", "koridor6.webp", "koridor7.webp"]
         },
         {
             title: "Ванная комната",
-            price: 30000,
+            price: 25000,
             priceType: "под ключ",
             desc: "Готовый проект ванной комнаты.",
-            images: [
-                { url: "vanna1.webp", text: "Общий вид ванной комнаты." },
-                { url: "vanna2.webp", text: "Зона скрытого карниза." },
-                { url: "vanna3.webp", text: "Детализированный узел." },
-                { url: "vanna4.webp", text: "Финальный результат." }
-            ]
+            images: ["vanna5.webp", "vanna4.webp", "vanna1.webp", "vanna2.webp", "vanna3.webp"]
         },
         {
             title: "Кухня",
-            price: 0,
-            priceType: "",
-            desc: "Готовое решение для кухни.",
-            images: []
+            price: 28000,
+            priceType: "под ключ",
+            desc: "Практичные решения с зональным освещением для кухни.",
+            images: [
+                { url: "kitchen1.webp", text: "Вариант 1: Матовый потолок со скрытым карнизом над окном.", price: 28000, priceType: "под ключ" },
+                { url: "kitchen2.webp", text: "Вариант 2: Зонирование обеденной группы скрытой нишей под гардину.", price: 35000, priceType: "под ключ" },
+                { url: "kitchen3.webp", text: "Вариант 3: Накладная трековая система над рабочей поверхностью.", price: 42000, priceType: "под ключ" },
+                { url: "kitchen4.webp", text: "Вариант 4: Потолок со световыми линиями и точечным светом.", price: 49000, priceType: "под ключ" },
+                { url: "kitchen5.webp", text: "Вариант 5: Теневой потолок Bizon с контрастным трековым светом.", price: 55000, priceType: "под ключ" },
+                { url: "kitchen6.webp", text: "Вариант 6: Комбинированный свет (треки + скрытая ниша под шторы).", price: 62000, priceType: "под ключ" },
+                { url: "kitchen7.webp", text: "Вариант 7: Премиум-проект кухни с парящим потолком и треками.", price: 70000, priceType: "под ключ" }
+            ]
         },
         {
             title: "Спальня",
-            price: 0,
-            priceType: "",
-            desc: "Готовое решение для спальни.",
-            images: []
+            price: 26000,
+            priceType: "под ключ",
+            desc: "Уютные варианты потолков с мягкой подсветкой для спальни.",
+            images: [
+                { url: "spalnya1.webp", text: "Вариант 1: Парящий потолок с теплыми светодиодными лентами.", price: 26000, priceType: "под ключ" },
+                { url: "spalnya2.webp", text: "Вариант 2: Скрытая гардина с мягкой подсветкой штор.", price: 32000, priceType: "под ключ" },
+                { url: "spalnya3.webp", text: "Вариант 3: Теневой потолок EuroKRAAB со встроенным треком.", price: 41000, priceType: "под ключ" }
+            ]
         }
     ]
 
@@ -1401,6 +1425,22 @@ var activeModalState = {
     itemIndex: 0,
     imageIndex: 0
 };
+
+
+/* ======================================================
+   ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+====================================================== */
+
+function formatPrice(price, priceType) {
+    if (price === undefined || price === null || price <= 0) {
+        return "По запросу";
+    }
+    var num = price.toLocaleString("ru-RU");
+    if (priceType === "м2") return num + " ₽ / м²";
+    if (priceType === "м") return num + " ₽ / м";
+    if (priceType === "под ключ") return num + " ₽ под ключ";
+    return num + " ₽";
+}
 
 
 /* ======================================================
@@ -1478,17 +1518,11 @@ function renderCatalog(category) {
             }
         }
 
-        var price = "";
-        if (item.price > 0) {
-            if (item.priceType === "м2") {
-                price = item.price.toLocaleString("ru-RU") + " ₽ / м²";
-            } else if (item.priceType === "м") {
-                price = item.price.toLocaleString("ru-RU") + " ₽ / м";
-            } else if (item.priceType === "под ключ") {
-                price = item.price.toLocaleString("ru-RU") + " ₽ под ключ";
-            }
+        var priceText = "";
+        if (category === "solutions" && item.images && item.images.length > 0 && typeof item.images[0] === "object" && item.images[0].price) {
+            priceText = "от " + item.images[0].price.toLocaleString("ru-RU") + " ₽ под ключ";
         } else {
-            price = "По запросу";
+            priceText = formatPrice(item.price, item.priceType);
         }
 
         card.innerHTML =
@@ -1496,7 +1530,7 @@ function renderCatalog(category) {
             '<img src="' + image + '" class="catalog-img" onerror="this.style.display=\'none\'">' +
             '<div class="catalog-body">' +
                 '<div class="catalog-title">' + item.title + '</div>' +
-                '<div class="catalog-price">' + price + '</div>' +
+                '<div class="catalog-price">' + priceText + '</div>' +
             '</div>';
 
         card.onclick = (function(cat, index) {
@@ -1579,6 +1613,7 @@ function updateModalView() {
 
     var image = document.getElementById("modal-img");
     var title = document.getElementById("modal-title");
+    var priceElem = document.getElementById("modal-price");
     var desc = document.getElementById("modal-desc");
     var dotsContainer = document.getElementById("slider-dots");
     var prevBtn = document.querySelector(".slider-btn.prev");
@@ -1587,12 +1622,19 @@ function updateModalView() {
     title.innerText = item.title;
     dotsContainer.innerHTML = "";
 
+    var currentPrice = item.price;
+    var currentPriceType = item.priceType;
+
     if (item.images && item.images.length > 0) {
         var current = item.images[state.imageIndex];
 
         if (typeof current === "object") {
             image.src = current.url;
-            desc.innerText = current.text;
+            desc.innerText = current.text || item.desc;
+            if (current.price !== undefined) {
+                currentPrice = current.price;
+                currentPriceType = current.priceType;
+            }
         } else {
             image.src = current;
             desc.innerText = item.desc;
@@ -1633,6 +1675,17 @@ function updateModalView() {
         if (prevBtn) prevBtn.style.display = "none";
         if (nextBtn) nextBtn.style.display = "none";
         dotsContainer.style.display = "none";
+    }
+
+    // Показывать цену в модалке ТОЛЬКО для категории 'solutions'
+    if (priceElem) {
+        if (state.category === "solutions") {
+            priceElem.innerText = formatPrice(currentPrice, currentPriceType);
+            priceElem.style.display = "block";
+        } else {
+            priceElem.innerText = "";
+            priceElem.style.display = "none";
+        }
     }
 }
 
