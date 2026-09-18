@@ -638,6 +638,65 @@ button {
 
 
 /* =========================
+   CONTACT MODAL
+========================= */
+
+.contact-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.contact-btn {
+    width: 100%;
+    height: 50px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    color: white;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.contact-btn:active {
+    transform: scale(0.98);
+}
+
+.contact-btn.tg {
+    background: #0088cc;
+}
+
+.contact-btn.max {
+    background: #6C5CE7;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.contact-btn.max:hover {
+    background: #5B4BC4;
+}
+
+.contact-btn.max:active {
+    background: #4B3CB3;
+}
+
+
+.contact-btn.phone {
+    background: #27ae60;
+}
+
+.contact-btn i {
+    font-size: 20px;
+    margin-right: 12px;
+    width: 24px;
+    text-align: center;
+}
+
+
+/* =========================
    MODAL
 ========================= */
 
@@ -887,10 +946,10 @@ button {
                 <span class="menu-arrow">→</span>
             </button>
 
-            <!-- Кнопка «Рассчитать стоимость» -->
-            <button class="menu-button" onclick="openSelection()">
-                <span class="menu-icon"><i class="fa-solid fa-calculator"></i></span>
-                Рассчитать стоимость
+            <!-- Кнопка «Мои работы» (ЗАМЕНЕНО с «Рассчитать стоимость») -->
+            <button class="menu-button" onclick="openCatalog('works')">
+                <span class="menu-icon"><i class="fa-solid fa-images"></i></span>
+                Мои работы
                 <span class="menu-arrow">→</span>
             </button>
 
@@ -984,7 +1043,7 @@ button {
 
 
     <!-- ======================================================
-         ЭКРАН КАТАЛОГА
+         ЭКРАН КАТАЛОГА / РАБОТ
     ====================================================== -->
 
     <section id="screen-catalog" class="screen">
@@ -1157,7 +1216,7 @@ button {
 
 
     <!-- ======================================================
-         МОДАЛЬНОЕ ОКНО
+         МОДАЛЬНОЕ ОКНО ДЛЯ КАТАЛОГА / МОИХ РАБОТ
     ====================================================== -->
 
     <div id="modal-overlay" class="modal-overlay" onclick="closeModalOnOverlay(event)">
@@ -1178,6 +1237,38 @@ button {
                     <div id="modal-price" class="modal-price"></div>
                 </div>
                 <div id="modal-desc" class="modal-desc"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ======================================================
+         МОДАЛЬНОЕ ОКНО «СВЯЗАТЬСЯ С МАСТЕРОМ»
+    ====================================================== -->
+
+    <div id="contact-modal" class="modal-overlay" onclick="closeContactModalOnOverlay(event)">
+        <div class="modal-card">
+            <button class="modal-close" onclick="closeContactModal()">×</button>
+            <div class="modal-content" style="padding: 24px 18px;">
+                <div class="modal-title" style="margin-bottom: 6px;">Связаться с мастером</div>
+                <div class="modal-desc" style="margin-bottom: 16px;">Выберите удобный способ связи для консультации или бесплатного вызова на замер:</div>
+                
+                <div class="contact-options">
+                    <!-- MAX Link -->
+                    <a href="https://max.ru/u/f9LHodD0cOL_PZjb7oWqQl_PGaJUjkp-4jSUqPcGrMIhH0zEqnA6Ba636sI" class="contact-btn max">
+                    <i class="fa-solid fa-comment-dots"></i> Написать в MAX
+                    </a>
+
+                    <!-- Telegram link (укажите ваш username вместо 'your_username') -->
+                    <a href="https://t.me/VadimFaigel" target="_blank" class="contact-btn tg">
+                        <i class="fa-brands fa-telegram"></i> Написать в Telegram
+                    </a>
+
+                    <!-- Звонок (укажите ваш телефон) -->
+                    <a href="tel:+79247926378" class="contact-btn phone">
+                        <i class="fa-solid fa-phone"></i> Позвонить мастеру
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -1208,6 +1299,13 @@ var catalog = {
             priceType: "м2",
             desc: "Глянцевый натяжной потолок визуально расширяет пространство и наполняет комнату светом.",
             images: ["glyanec.webp", "glyanec2.webp", "glyanec3.webp"]
+        },
+        {
+            title: "Фотопечать",
+            price: 1500,
+            priceType: "м2",
+            desc: "Натяжной потолок с фотопечатью — это стильное решение, которое добавляет интерьеру индивидуальность, визуальный объем и яркий акцент.",
+            images: ["foto1.webp", "foto2.webp", "foto3.webp"]
         }
     ],
 
@@ -1296,45 +1394,73 @@ var catalog = {
 
     lighting: [
         {
+            title: "Люстра",
+            price: 3950,
+            priceType: "м",
+            desc: "Накладные и встраиваемые варианты освещения под любой интерьер.",
+            images: ["lustra1.webp"]
+        },
+        {
+            title: "Подвесной светильник",
+            price: 3950,
+            priceType: "м",
+            desc: "Стильное акцентное освещение для обеденных зон и спален.",
+            images: ["svetilnik1.webp"]
+        },
+        {
+            title: "Точечный светильник (Софит)",
+            price: 3950,
+            priceType: "м",
+            desc: "Классические точечные споты для равномерной подсветки.",
+            images: ["sofit1.webp"]
+        },
+        {
+            title: "Накладной спот",
+            price: 3950,
+            priceType: "м",
+            desc: "Поворотные накладные светильники для акцентного света.",
+            images: ["spot.webp"]
+        },
+        {
             title: "Световая линия Flexy Black",
             price: 4700,
             priceType: "м",
-            desc: "Контрастная черная световая линия для современного интерьера. Каждый следующий метр считается по 4200",
+            desc: "Контрастная черная световая линия для современного интерьера.",
             images: ["svetline2.webp", "svetline3.webp"]
         },        
         {
             title: "Световая линия Flexy White",
             price: 4700,
             priceType: "м",
-            desc: "Мягкий и равномерный свет для основного или зонального освещения. Каждый следующий метр считается по 4200",
+            desc: "Мягкий и равномерный свет для основного или зонального освещения.",
             images: ["svetlinewhite2.webp", "svetlinewhite3.webp"]
         },
         {
             title: "Накладной трек Black",
             price: 3950,
             priceType: "м",
-            desc: "Черная накладная трековая система - Выразительный черный цвет подчеркивает геометрию пространства и добавляет интерьеру стильный акцент. Удобная регулировка светильников вдоль шины дает возможность гибко настраивать освещение. В стоимость уже входит шинопровод и два светильника.",
+            desc: "Черная накладная трековая система с регулируемыми спотами.",
             images: ["nbtrek1.webp", "nbtrek2.webp", "nbtrek3.webp"]
         },
         {
             title: "Накладной трек White",
             price: 3950,
             priceType: "м",
-            desc: "Белая накладная трековая система - Лаконичный белый корпус визуально растворяется на потолке и мягко вписывается в светлый интерьер. Поворотные споты легко регулируются, позволяя направить свет в нужную зону. В стоимость уже входит шинопровод и два светильника.",
+            desc: "Белая накладная трековая система для светлых интерьеров.",
             images: ["nwtrek1.webp", "nwtrek2.webp", "nwtrek3.webp"]
         },
         {
             title: "Встраиваемый трек Black",
             price: 5700,
             priceType: "м",
-            desc: "Мягкий и равномерный свет для основного или зонального освещения. Каждый следующий метр считается по 5200",
+            desc: "Трек утапливается заподлицо с натяжным потолком.",
             images: ["vstroentrek1.webp", "vstroentrek2.webp", "vstroentrek3.webp"]
         },
         {
             title: "Встраиваемый трек White",
             price: 5700,
             priceType: "м",
-            desc: "Мягкий и равномерный свет для основного или зонального освещения. Каждый следующий метр считается по 4200",
+            desc: "Встраиваемая белая трековая линия с минималистичным видом.",
             images: ["vstroentrekw1.webp", "vstroentrekw2.webp", "vstroentrekw3.webp"]
         }
     ],
@@ -1387,6 +1513,30 @@ var catalog = {
                 { url: "spalnya3.webp", text: "Вариант 3: Теневой потолок EuroKRAAB со встроенным треком.", price: 41000, priceType: "под ключ" }
             ]
         }
+    ],
+
+    /* НОВЫЙ РАЗДЕЛ: МОИ РАБОТЫ */
+    works: [
+        {
+            title: "Теневой потолок Bizon в гостиной",
+            desc: "Выполнен теневой зазор по периметру, смонтирован скрытый карниз с подсветкой штор и встраиваемая трековая система.",
+            images: ["zal1.webp", "zal2.webp", "bizon1.webp"]
+        },
+        {
+            title: "Световые линии в прихожей",
+            desc: "Установка матового полотна со световыми линиями Flexy White. Яркий и равномерный основной свет без громоздких люстр.",
+            images: ["koridor1.webp", "svetlinewhite2.webp", "koridor3.webp"]
+        },
+        {
+            title: "Парящий потолок в ванной",
+            desc: "Монтаж влагостойкого полотна с парящим профилем Contour Pro Led по периметру. Создан эффект невесомости с мягким фоновым светом.",
+            images: ["vanna5.webp", "vanna4.webp", "contourproledwhite2.webp"]
+        },
+        {
+            title: "Кухня-гостиная с треками",
+            desc: "Зонирование пространства с помощью черных накладных треков и встроенной скрытой гардины АМ1 Black.",
+            images: ["kitchen3.webp", "kitchen5.webp", "gardinablack5.webp"]
+        }
     ]
 
 };
@@ -1401,7 +1551,8 @@ var categoryNames = {
     profile: { title: "Примыкание", subtitle: "Выберите тип профиля" },
     curtains: { title: "Карнизы", subtitle: "Выберите решение для штор" },
     lighting: { title: "Свет", subtitle: "Выберите световое решение" },
-    solutions: { title: "Готовые решения", subtitle: "Готовые проекты по помещениям" }
+    solutions: { title: "Готовые решения", subtitle: "Готовые проекты по помещениям" },
+    works: { title: "Мои работы", subtitle: "Примеры выполненных объектов" }
 };
 
 
@@ -1414,7 +1565,8 @@ var selected = {
     profile: 0,
     curtains: 0,
     lighting: 0,
-    solutions: 0
+    solutions: 0,
+    works: 0
 };
 
 var currentScreenId = "screen-home";
@@ -1433,7 +1585,7 @@ var activeModalState = {
 
 function formatPrice(price, priceType) {
     if (price === undefined || price === null || price <= 0) {
-        return "По запросу";
+        return "";
     }
     var num = price.toLocaleString("ru-RU");
     if (priceType === "м2") return num + " ₽ / м²";
@@ -1481,7 +1633,7 @@ function openFaq() {
 
 
 /* ======================================================
-   КАТАЛОГ
+   КАТАЛОГ / МОИ РАБОТЫ
 ====================================================== */
 
 function openCatalog(category) {
@@ -1521,6 +1673,8 @@ function renderCatalog(category) {
         var priceText = "";
         if (category === "solutions" && item.images && item.images.length > 0 && typeof item.images[0] === "object" && item.images[0].price) {
             priceText = "от " + item.images[0].price.toLocaleString("ru-RU") + " ₽ под ключ";
+        } else if (category === "works") {
+            priceText = item.images ? item.images.length + " фото" : "Проект";
         } else {
             priceText = formatPrice(item.price, item.priceType);
         }
@@ -1677,10 +1831,12 @@ function updateModalView() {
         dotsContainer.style.display = "none";
     }
 
-    // Показывать цену в модалке ТОЛЬКО для категории 'solutions'
     if (priceElem) {
         if (state.category === "solutions") {
             priceElem.innerText = formatPrice(currentPrice, currentPriceType);
+            priceElem.style.display = "block";
+        } else if (state.category === "works") {
+            priceElem.innerText = "Объект";
             priceElem.style.display = "block";
         } else {
             priceElem.innerText = "";
@@ -1746,18 +1902,30 @@ function handleModalSwipe() {
 
 
 /* ======================================================
-   КОНСУЛЬТАЦИЯ В MAX
+   СВЯЗЬ С МАСТЕРОМ
 ====================================================== */
 
 function contactManager() {
     var payload = JSON.stringify({ action: "consultation" });
 
-    if (window.WebApp && typeof window.WebApp.sendData === "function") {
+    // Если открыто внутри Telegram / MAX Mini App
+    if (window.Telegram && window.Telegram.WebApp && typeof window.Telegram.WebApp.sendData === "function") {
+        window.Telegram.WebApp.sendData(payload);
+    } else if (window.WebApp && typeof window.WebApp.sendData === "function") {
         window.WebApp.sendData(payload);
-    } else if (window.WebApp && typeof window.WebApp.openLink === "function") {
-        window.WebApp.openLink("https://max.ru/");
     } else {
-        alert("Запрос мастеру отправлен!");
+        // Открываем всплывающее окно выбора связи
+        document.getElementById("contact-modal").classList.add("active");
+    }
+}
+
+function closeContactModal() {
+    document.getElementById("contact-modal").classList.remove("active");
+}
+
+function closeContactModalOnOverlay(e) {
+    if (e.target.id === "contact-modal") {
+        closeContactModal();
     }
 }
 
