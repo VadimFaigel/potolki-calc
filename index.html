@@ -476,19 +476,25 @@ button {
     transform: scale(1);
 }
 
-.catalog-img {
+.catalog-card-img-wrap {
     width: 100%;
     height: 115px;
-    object-fit: cover;
-    display: block;
+    overflow: hidden;
     background: var(--bg);
 }
 
-.catalog-body {
+.catalog-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.catalog-card-content {
     padding: 12px;
 }
 
-.catalog-title {
+.catalog-card-title {
     font-size: 13px;
     font-weight: 700;
     line-height: 1.3;
@@ -496,7 +502,7 @@ button {
     color: var(--text);
 }
 
-.catalog-price {
+.catalog-card-price {
     color: var(--accent);
     font-size: 13px;
     font-weight: 800;
@@ -886,6 +892,53 @@ button {
     }
 }
 
+/* =========================
+   ПРАЙС-ЛИСТ В МОДАЛКЕ
+========================= */
+.price-breakdown {
+    margin-top: 12px;
+    background: #f8f9fa;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 14px;
+}
+
+.price-breakdown-title {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--accent);
+}
+
+.price-row {
+    display: flex;
+    align-items: baseline;
+    font-size: 12px;
+    margin-bottom: 8px;
+}
+
+.price-row:last-child {
+    margin-bottom: 0;
+}
+
+.price-name {
+    color: var(--text);
+}
+
+.price-dots {
+    flex-grow: 1;
+    border-bottom: 1px dotted #bdc3c7;
+    margin: 0 8px;
+    position: relative;
+    top: -3px;
+}
+
+.price-value {
+    font-weight: 700;
+    white-space: nowrap;
+    color: var(--text);
+}
+
 </style>
 </head>
 
@@ -946,7 +999,7 @@ button {
                 <span class="menu-arrow">→</span>
             </button>
 
-            <!-- Кнопка «Мои работы» (ЗАМЕНЕНО с «Рассчитать стоимость») -->
+            <!-- Кнопка «Мои работы» -->
             <button class="menu-button" onclick="openCatalog('works')">
                 <span class="menu-icon"><i class="fa-solid fa-images"></i></span>
                 Мои работы
@@ -1253,28 +1306,28 @@ button {
                 <div class="modal-title" style="margin-bottom: 6px;">Связаться с мастером</div>
                 <div class="modal-desc" style="margin-bottom: 16px;">Выберите удобный способ связи для консультации или бесплатного вызова на замер:</div>
                 
-     <div class="contact-options">
-    <!-- MAX Link -->
-    <a href="max://open?id=f9LHodD0cOL_PZjb7oWqQl_PGaJUjkp-4jSUqPcGrMIhH0zEqnA6Ba636sI" 
-       onclick="window.location.href='max://open?id=f9LHodD0cOL_PZjb7oWqQl_PGaJUjkp-4jSUqPcGrMIhH0zEqnA6Ba636sI'; setTimeout(function(){ window.location.href='https://max.ru/u/f9LHodD0cOL_PZjb7oWqQl_PGaJUjkp-4jSUqPcGrMIhH0zEqnA6Ba636sI'; }, 1000); return false;" 
-       target="_blank" 
-       class="contact-btn max">
-        <i class="fa-solid fa-comment-dots"></i> Написать в MAX
-    </a>
+                <div class="contact-options">
+                    <!-- MAX Link -->
+                    <a href="max://open?id=f9LHodD0cOL_PZjb7oWqQl_PGaJUjkp-4jSUqPcGrMIhH0zEqnA6Ba636sI" 
+                       onclick="window.location.href='max://open?id=f9LHodD0cOL_PZjb7oWqQl_PGaJUjkp-4jSUqPcGrMIhH0zEqnA6Ba636sI'; setTimeout(function(){ window.location.href='https://max.ru/u/f9LHodD0cOL_PZjb7oWqQl_PGaJUjkp-4jSUqPcGrMIhH0zEqnA6Ba636sI'; }, 1000); return false;" 
+                       target="_blank" 
+                       class="contact-btn max">
+                        <i class="fa-solid fa-comment-dots"></i> Написать в MAX
+                    </a>
 
-    <!-- Telegram link -->
-    <a href="tg://resolve?domain=VadimFaigel" 
-       onclick="window.location.href='tg://resolve?domain=VadimFaigel'; setTimeout(function(){ window.location.href='https://t.me/VadimFaigel'; }, 1000); return false;" 
-       target="_blank" 
-       class="contact-btn tg">
-        <i class="fa-brands fa-telegram"></i> Написать в Telegram
-    </a>
+                    <!-- Telegram link -->
+                    <a href="tg://resolve?domain=VadimFaigel" 
+                       onclick="window.location.href='tg://resolve?domain=VadimFaigel'; setTimeout(function(){ window.location.href='https://t.me/VadimFaigel'; }, 1000); return false;" 
+                       target="_blank" 
+                       class="contact-btn tg">
+                        <i class="fa-brands fa-telegram"></i> Написать в Telegram
+                    </a>
 
-    <!-- Звонок -->
-    <a href="tel:+79247926378" class="contact-btn phone">
-        <i class="fa-solid fa-phone"></i> Позвонить мастеру
-    </a>
-</div>
+                    <!-- Звонок -->
+                    <a href="tel:+79247926378" class="contact-btn phone">
+                        <i class="fa-solid fa-phone"></i> Позвонить мастеру
+                    </a>
+                </div>
 
             </div>
         </div>
@@ -1475,15 +1528,234 @@ var catalog = {
     solutions: [
         {
             title: "Зал",
-            price: 35000,
+            price: 23000,
             priceType: "под ключ",
             desc: "Готовые решения для гостиных и залов.",
             images: [
-                { url: "zal1.webp", text: "Вариант 1: Матовый потолок со скрытым карнизом над окном.", price: 28000, priceType: "под ключ" },
-                { url: "zal2.webp", text: "Вариант 2: Зонирование обеденной группы скрытой нишей под гардину.", price: 35000, priceType: "под ключ" },
-                { url: "zal3.webp", text: "Вариант 3: Накладная трековая система над рабочей поверхностью.", price: 42000, priceType: "под ключ" },
-                { url: "zal4.webp", text: "Вариант 4: Потолок со световыми линиями и точечным светом.", price: 49000, priceType: "под ключ" },
-                { url: "zal5.webp", text: "Вариант 5: Теневой потолок Bizon с контрастным трековым светом.", price: 55000, priceType: "под ключ" }
+                { 
+                    url: "zal1.webp", 
+                    price: 120000, 
+                    priceType: "под ключ",
+                    text: `Матовый натяжной потолок на теневом профиле, скрытый карниз с подсветкой, световые линии и люстра.
+                    
+                    <div class="price-breakdown">
+                        <div class="price-breakdown-title">Из чего состоит стоимость:</div>
+                        
+                        <div class="price-row">
+                            <span class="price-name">Теневой профиль EuroKraab (18 м)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">45 000 ₽</span>
+                        </div>
+                        
+                        <div class="price-row">
+                            <span class="price-name">Скрытый карниз с подсветкой (3.2 м)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">19 500 ₽</span>
+                        </div>
+                        
+                        <div class="price-row">
+                            <span class="price-name">Световая линия (11 м)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">46 200 ₽</span>
+                        </div>
+                        
+                        <div class="price-row">
+                            <span class="price-name">Углы световой линии (4 шт)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">4 000 ₽</span>
+                        </div>
+                        
+                        <div class="price-row">
+                            <span class="price-name">Установка люстры</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">1 500 ₽</span>
+                        </div>
+
+                        <div class="price-row">
+                            <span class="price-name">Матовое полотно (18 м2)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">6 630 ₽</span>
+                        </div>
+                    </div>`
+                },
+                { 
+                    url: "zal2.webp", 
+                    price: 75000, 
+                    priceType: "под ключ",
+                    text: `Матовый натяжной потолок на теневом профиле Bizon, классический карниз, встроенное трековое освещение и подстветка одной стены.
+                    
+                    <div class="price-breakdown">
+                        <div class="price-breakdown-title">Из чего состоит стоимость:</div>
+                        
+                        <div class="price-row">
+                            <span class="price-name">Теневой профиль Bizon (18 м)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">21 120 ₽</span>
+                        </div>
+
+                        <div class="price-row">
+                            <span class="price-name">Парящий профиль с подсветкой</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">21 252 ₽</span>
+                        </div>
+
+                        <div class="price-row">
+                            <span class="price-name">Классический карниз (3.2 м)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">1 760 ₽</span>
+                        </div>
+                        
+                        <div class="price-row">
+                            <span class="price-name">Встроенное трековое освещение (6 м)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">24 000 ₽</span>
+                        </div>
+                        
+                        <div class="price-row">
+                            <span class="price-name">Углы трека (2 шт)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">2 000 ₽</span>
+                        </div>
+                        
+                        <div class="price-row">
+                            <span class="price-name">Матовое полотно (18 м2)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">6 630 ₽</span>
+                        </div>
+                    </div>`
+                },
+                { 
+                    url: "zal3.webp", 
+                    price: 28000, 
+                    priceType: "под ключ",
+                    text: `Матовый натяжной потолок на теневом профиле Bizon, классический карниз, встроенное трековое освещение и подстветка одной стены.
+                    
+                    <div class="price-breakdown">
+                        <div class="price-breakdown-title">Из чего состоит стоимость:</div>
+                        
+                        <div class="price-row">
+                            <span class="price-name">Классический профиль (18 м)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">13 000 ₽</span>
+                        </div>
+
+                        <div class="price-row">
+                            <span class="price-name">Вставка г образная черная (18 м)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">2 112 ₽</span>
+                        </div>
+
+                        <div class="price-row">
+                            <span class="price-name">Классический карниз (3.2 м)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">1 760 ₽</span>
+                        </div>
+
+                        <div class="price-row">
+                            <span class="price-name">Установка люстры</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">1 500 ₽</span>
+                        </div>
+                        
+                        <div class="price-row">
+                            <span class="price-name">Установка софитов (4 шт)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">2 840 ₽</span>
+                        </div>
+
+                        <div class="price-row">
+                            <span class="price-name">Матовое полотно (18 м2)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">6 630 ₽</span>
+                        </div>
+                    </div>`
+                },
+                { 
+                    url: "zal4.webp", 
+                    price: 52500, 
+                    priceType: "под ключ",
+                    text: `Матовый натяжной потолок на теневом профиле Bizon, классический карниз, встроенное трековое освещение и подстветка одной стены.
+                    
+                    <div class="price-breakdown">
+                        <div class="price-breakdown-title">Из чего состоит стоимость:</div>
+                        
+                        <div class="price-row">
+                            <span class="price-name">Классический профиль (18 м)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">13 000 ₽</span>
+                        </div>
+
+                        <div class="price-row">
+                            <span class="price-name">Вставка г образная белая (18 м)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">2 112 ₽</span>
+                        </div>
+
+                        <div class="price-row">
+                            <span class="price-name">Скрытый карниз с подсветкой (3.2 м)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">19 500 ₽</span>
+                        </div>
+
+                        <div class="price-row">
+                            <span class="price-name">Накладной трек (5 м)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">11 250 ₽</span>
+                        </div>
+                        
+                        <div class="price-row">
+                            <span class="price-name">Матовое полотно (18 м2)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">6 630 ₽</span>
+                        </div>
+                    </div>`
+                },
+                { 
+                    url: "zal5.webp", 
+                    price: 62500, 
+                    priceType: "под ключ",
+                    text: `Матовый натяжной потолок на теневом профиле Bizon, классический карниз, встроенное трековое освещение и подстветка одной стены.
+                    
+                    <div class="price-breakdown">
+                        <div class="price-breakdown-title">Из чего состоит стоимость:</div>
+                        
+                        <div class="price-row">
+                            <span class="price-name">Классический профиль (18 м)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">13 000 ₽</span>
+                        </div>
+
+                        <div class="price-row">
+                            <span class="price-name">Парящий профиль с подсветкой</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">22 700 ₽</span>
+                        </div>
+
+                        <div class="price-row">
+                            <span class="price-name">Вставка г образная белая (18 м)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">2 112 ₽</span>
+                        </div>
+
+                        <div class="price-row">
+                            <span class="price-name">Скрытый карниз без подсветки (3.2 м)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">14 500 ₽</span>
+                        </div>
+
+                        <div class="price-row">
+                            <span class="price-name">Установка софитов (5 шт)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">3 550 ₽</span>
+                        </div>
+                        
+                        <div class="price-row">
+                            <span class="price-name">Матовое полотно (18 м2)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">6 630 ₽</span>
+                        </div>
+                    </div>`
+            }
             ]
         },
         {
@@ -1542,7 +1814,6 @@ var catalog = {
         }
     ],
 
-    /* НОВЫЙ РАЗДЕЛ: МОИ РАБОТЫ */
     works: [
         {
             title: "Теневой потолок Bizon в гостиной",
@@ -1587,15 +1858,6 @@ var categoryNames = {
    СОСТОЯНИЕ
 ====================================================== */
 
-var selected = {
-    canvas: 0,
-    profile: 0,
-    curtains: 0,
-    lighting: 0,
-    solutions: 0,
-    works: 0
-};
-
 var currentScreenId = "screen-home";
 var previousScreenId = "screen-home";
 
@@ -1610,16 +1872,19 @@ var activeModalState = {
    ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
 ====================================================== */
 
-function formatPrice(price, priceType) {
+function formatPrice(price, priceType, isFrom) {
     if (price === undefined || price === null || price <= 0) {
         return "";
     }
     var num = price.toLocaleString("ru-RU");
-    if (priceType === "м2") return num + " ₽ / м²";
-    if (priceType === "м") return num + " ₽ / м";
-    if (priceType === "под ключ") return num + " ₽ под ключ";
-    return num + " ₽";
+    var prefix = isFrom ? "от " : "";
+
+    if (priceType === "м2") return prefix + num + " ₽ / м²";
+    if (priceType === "м") return prefix + num + " ₽ / м";
+    if (priceType === "под ключ") return prefix + num + " ₽ под ключ";
+    return prefix + num + " ₽";
 }
+
 
 
 /* ======================================================
@@ -1669,61 +1934,56 @@ function openCatalog(category) {
 }
 
 function renderCatalog(category) {
-    var grid = document.getElementById("catalog-grid");
-    grid.innerHTML = "";
+    var container = document.getElementById("catalog-grid");
+    var titleElem = document.getElementById("catalog-title");
+    var subtitleElem = document.getElementById("catalog-subtitle");
 
-    var data = catalog[category];
-    var info = categoryNames[category];
+    if (!container) return;
 
-    document.getElementById("catalog-title").innerText = info.title;
-    document.getElementById("catalog-subtitle").innerText = info.subtitle;
+    // Обновляем заголовки экрана
+    if (categoryNames[category]) {
+        if (titleElem) titleElem.innerText = categoryNames[category].title;
+        if (subtitleElem) subtitleElem.innerText = categoryNames[category].subtitle;
+    }
 
-    for (var i = 0; i < data.length; i++) {
-        var item = data[i];
+    var items = catalog[category] || [];
+    container.innerHTML = "";
+
+    items.forEach(function(item, index) {
         var card = document.createElement("div");
-
         card.className = "catalog-card";
 
-        if (selected[category] === i) {
-            card.classList.add("selected");
-        }
-
-        var image = "";
-        if (item.images && item.images.length) {
-            if (typeof item.images[0] === "object") {
-                image = item.images[0].url;
-            } else {
-                image = item.images[0];
-            }
+        var imgUrl = "";
+        if (item.images && item.images.length > 0) {
+            var firstImg = item.images[0];
+            imgUrl = typeof firstImg === "string" ? firstImg : firstImg.url;
         }
 
         var priceText = "";
-        if (category === "solutions" && item.images && item.images.length > 0 && typeof item.images[0] === "object" && item.images[0].price) {
-            priceText = "от " + item.images[0].price.toLocaleString("ru-RU") + " ₽ под ключ";
-        } else if (category === "works") {
+        if (category === "works") {
             priceText = item.images ? item.images.length + " фото" : "Проект";
         } else {
-            priceText = formatPrice(item.price, item.priceType);
+            // Для категории готовых решений добавляем приставку "от"
+            var isFrom = (category === "solutions");
+            priceText = formatPrice(item.price, item.priceType, isFrom);
         }
 
-        card.innerHTML =
-            '<div class="card-badge"><i class="fa-solid fa-check"></i></div>' +
-            '<img src="' + image + '" class="catalog-img" onerror="this.style.display=\'none\'">' +
-            '<div class="catalog-body">' +
-                '<div class="catalog-title">' + item.title + '</div>' +
-                '<div class="catalog-price">' + priceText + '</div>' +
+
+        card.innerHTML = 
+            '<div class="catalog-card-img-wrap">' +
+                '<img src="' + imgUrl + '" alt="' + item.title + '" class="catalog-card-img" loading="lazy" onerror="this.style.display=\'none\'">' +
+            '</div>' +
+            '<div class="catalog-card-content">' +
+                '<h3 class="catalog-card-title">' + item.title + '</h3>' +
+                '<div class="catalog-card-price">' + priceText + '</div>' +
             '</div>';
 
-        card.onclick = (function(cat, index) {
-            return function() {
-                selected[cat] = index;
-                renderCatalog(cat);
-                openModal(cat, index);
-            };
-        })(category, i);
+        card.addEventListener("click", function() {
+            openModal(category, index);
+        });
 
-        grid.appendChild(card);
-    }
+        container.appendChild(card);
+    });
 }
 
 
@@ -1811,14 +2071,14 @@ function updateModalView() {
 
         if (typeof current === "object") {
             image.src = current.url;
-            desc.innerText = current.text || item.desc;
+            desc.innerHTML = current.text || item.desc;
             if (current.price !== undefined) {
                 currentPrice = current.price;
                 currentPriceType = current.priceType;
             }
         } else {
             image.src = current;
-            desc.innerText = item.desc;
+            desc.innerHTML = item.desc;
         }
 
         image.style.display = "block";
@@ -1852,14 +2112,14 @@ function updateModalView() {
 
     } else {
         image.style.display = "none";
-        desc.innerText = item.desc;
+        desc.innerHTML = item.desc;
         if (prevBtn) prevBtn.style.display = "none";
         if (nextBtn) nextBtn.style.display = "none";
         dotsContainer.style.display = "none";
     }
 
     if (priceElem) {
-        if (state.category === "solutions") {
+        if (state.category === "solutions" || state.category === "canvas" || state.category === "profile" || state.category === "curtains" || state.category === "lighting") {
             priceElem.innerText = formatPrice(currentPrice, currentPriceType);
             priceElem.style.display = "block";
         } else if (state.category === "works") {
@@ -1935,13 +2195,11 @@ function handleModalSwipe() {
 function contactManager() {
     var payload = JSON.stringify({ action: "consultation" });
 
-    // Если открыто внутри Telegram / MAX Mini App
     if (window.Telegram && window.Telegram.WebApp && typeof window.Telegram.WebApp.sendData === "function") {
         window.Telegram.WebApp.sendData(payload);
     } else if (window.WebApp && typeof window.WebApp.sendData === "function") {
         window.WebApp.sendData(payload);
     } else {
-        // Открываем всплывающее окно выбора связи
         document.getElementById("contact-modal").classList.add("active");
     }
 }
