@@ -118,14 +118,35 @@ button {
 .logo {
     width: 40px;
     height: 40px;
+    min-width: 40px;
     border-radius: 50%;
     background: #252d32;
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
+    overflow: hidden;
     margin-right: 12px;
+    position: relative;
+}
+
+.logo img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 50%;
+}
+
+.logo-fallback {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: #fff;
 }
 
 .header-title {
@@ -950,7 +971,10 @@ button {
     <!-- HEADER -->
 
     <header class="header">
-        <div class="logo">⌂</div>
+        <div class="logo" aria-label="Аватар компании">
+            <img src="avatar.webp" alt="Аватар" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <span class="logo-fallback" style="display:none;">⌂</span>
+        </div>
         <div>
             <div class="header-title">Потолки PRO</div>
             <div class="header-subtitle">Выбор потолков и решений</div>
@@ -1712,7 +1736,7 @@ var catalog = {
                 },
                 { 
                     url: "zal1.webp", 
-                    price: 120000, 
+                    price: 96600, 
                     priceType: "под ключ",
                     text: `Матовый натяжной потолок на теневом профиле, скрытый карниз с подсветкой, световые линии и люстра.
                     
@@ -1720,9 +1744,9 @@ var catalog = {
                         <div class="price-breakdown-title">Из чего состоит стоимость:</div>
                         
                         <div class="price-row">
-                            <span class="price-name">Теневой профиль EuroKraab (18 м)</span>
+                            <span class="price-name">Теневой профиль Bizon (18 м)</span>
                             <span class="price-dots"></span>
-                            <span class="price-value">45 000 ₽</span>
+                            <span class="price-value">21 600 ₽</span>
                         </div>
                         
                         <div class="price-row">
@@ -1923,6 +1947,40 @@ var catalog = {
                     </div>`
                 },
                 { 
+                    url: "koridor1.webp", 
+                    price: 35400, 
+                    priceType: "под ключ",
+                    text: `Матовый натяжной потолок на теневом профиле, скрытый карниз с подсветкой, световые линии и люстра.
+                    
+                    <div class="price-breakdown">
+                        <div class="price-breakdown-title">Из чего состоит стоимость:</div>
+                        
+                        <div class="price-row">
+                            <span class="price-name">Теневой профиль Bizon (12 м)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">14 400 ₽</span>
+                        </div>
+
+                        <div class="price-row">
+                            <span class="price-name">Световая линия (4 м)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">16 800₽</span>
+                        </div>
+                        
+                        <div class="price-row">
+                            <span class="price-name">Углы световой линии (2 шт)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">2 000 ₽</span>
+                        </div>
+
+                        <div class="price-row">
+                            <span class="price-name">Матовое полотно (6 м2)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">2 200 ₽</span>
+                        </div>
+                    </div>`
+                },
+                { 
                     url: "koridor2.webp", 
                     price: 37000, 
                     priceType: "под ключ",
@@ -1941,40 +1999,6 @@ var catalog = {
                             <span class="price-name">Установка софитов (4 шт)</span>
                             <span class="price-dots"></span>
                             <span class="price-value">2 800 ₽</span>
-                        </div>
-
-                        <div class="price-row">
-                            <span class="price-name">Матовое полотно (6 м2)</span>
-                            <span class="price-dots"></span>
-                            <span class="price-value">2 200 ₽</span>
-                        </div>
-                    </div>`
-                },
-                { 
-                    url: "koridor1.webp", 
-                    price: 51000, 
-                    priceType: "под ключ",
-                    text: `Матовый натяжной потолок на теневом профиле, скрытый карниз с подсветкой, световые линии и люстра.
-                    
-                    <div class="price-breakdown">
-                        <div class="price-breakdown-title">Из чего состоит стоимость:</div>
-                        
-                        <div class="price-row">
-                            <span class="price-name">Теневой профиль EuroKraab (12 м)</span>
-                            <span class="price-dots"></span>
-                            <span class="price-value">30 000 ₽</span>
-                        </div>
-
-                        <div class="price-row">
-                            <span class="price-name">Световая линия (4 м)</span>
-                            <span class="price-dots"></span>
-                            <span class="price-value">16 800₽</span>
-                        </div>
-                        
-                        <div class="price-row">
-                            <span class="price-name">Углы световой линии (2 шт)</span>
-                            <span class="price-dots"></span>
-                            <span class="price-value">2 000 ₽</span>
                         </div>
 
                         <div class="price-row">
@@ -2074,7 +2098,7 @@ var catalog = {
                 },
                 { 
                     url: "vanna4.webp", 
-                    price: 29000, 
+                    price: 23800, 
                     priceType: "под ключ",
                     text: `Матовый натяжной потолок на теневом профиле, скрытый карниз с подсветкой, световые линии и люстра.
                     
@@ -2082,7 +2106,7 @@ var catalog = {
                         <div class="price-breakdown-title">Из чего состоит стоимость:</div>
                         
                         <div class="price-row">
-                            <span class="price-name">Теневой профиль EuroKraab (4 м)</span>
+                            <span class="price-name">Теневой профиль Bizon (4 м)</span>
                             <span class="price-dots"></span>
                             <span class="price-value">10 000 ₽</span>
                         </div>
@@ -2097,6 +2121,40 @@ var catalog = {
                             <span class="price-name">Установка софитов (4 шт)</span>
                             <span class="price-dots"></span>
                             <span class="price-value">2 800 ₽</span>
+                        </div>
+
+                        <div class="price-row">
+                            <span class="price-name">Матовое полотно (3 м2)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">1 400 ₽</span>
+                        </div>
+                    </div>`
+                },
+                 { 
+                    url: "vanna2.webp", 
+                    price: 29300, 
+                    priceType: "под ключ",
+                    text: `Матовый натяжной потолок на теневом профиле, скрытый карниз с подсветкой, световые линии и люстра.
+                    
+                    <div class="price-breakdown">
+                        <div class="price-breakdown-title">Из чего состоит стоимость:</div>
+                        
+                        <div class="price-row">
+                            <span class="price-name">Теневой профиль Bizon (8 м)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">9 600 ₽</span>
+                        </div>
+
+                        <div class="price-row">
+                            <span class="price-name">Световая линия (3 м)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">14 100 ₽</span>
+                        </div>
+                        
+                        <div class="price-row">
+                            <span class="price-name">Скрытая однорядная гардина АМ1 (1.5 м)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">4 500 ₽</span>
                         </div>
 
                         <div class="price-row">
@@ -2140,40 +2198,6 @@ var catalog = {
                         </div>
                     </div>`
                  },
-                 { 
-                    url: "vanna2.webp", 
-                    price: 39700, 
-                    priceType: "под ключ",
-                    text: `Матовый натяжной потолок на теневом профиле, скрытый карниз с подсветкой, световые линии и люстра.
-                    
-                    <div class="price-breakdown">
-                        <div class="price-breakdown-title">Из чего состоит стоимость:</div>
-                        
-                        <div class="price-row">
-                            <span class="price-name">Теневой профиль EuroKraab (8 м)</span>
-                            <span class="price-dots"></span>
-                            <span class="price-value">20 000 ₽</span>
-                        </div>
-
-                        <div class="price-row">
-                            <span class="price-name">Световая линия (3 м)</span>
-                            <span class="price-dots"></span>
-                            <span class="price-value">14 100 ₽</span>
-                        </div>
-                        
-                        <div class="price-row">
-                            <span class="price-name">Скрытая однорядная гардина АМ1 (1.5 м)</span>
-                            <span class="price-dots"></span>
-                            <span class="price-value">4 500 ₽</span>
-                        </div>
-
-                        <div class="price-row">
-                            <span class="price-name">Матовое полотно (3 м2)</span>
-                            <span class="price-dots"></span>
-                            <span class="price-value">1 400 ₽</span>
-                        </div>
-                    </div>`
-                },
             ]
         },
         {
@@ -2443,13 +2467,230 @@ var catalog = {
         },
         {
             title: "Спальня",
-            price: 26000,
+            price: 71000,
             priceType: "под ключ",
             desc: "Уютные варианты потолков с мягкой подсветкой для спальни.",
             images: [
-                { url: "spalnya1.webp", text: "Вариант 1: Парящий потолок с теплыми светодиодными лентами.", price: 26000, priceType: "под ключ" },
-                { url: "spalnya2.webp", text: "Вариант 2: Скрытая гардина с мягкой подсветкой штор.", price: 32000, priceType: "под ключ" },
-                { url: "spalnya3.webp", text: "Вариант 3: Теневой потолок EuroKRAAB со встроенным треком.", price: 41000, priceType: "под ключ" }
+                { 
+                    url: "spalnya6.webp", 
+                    price: 48500, 
+                    priceType: "под ключ",
+                    text: `Матовый натяжной потолок на теневом профиле Bizon, классический карниз, встроенное трековое освещение и подстветка одной стены.
+                    
+                    <div class="price-breakdown">
+                        <div class="price-breakdown-title">Из чего состоит стоимость:</div>
+                       
+                        <div class="price-row">
+                            <span class="price-name">Теневой профиль Bizon (12 м)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">14 500 ₽</span>
+                        </div>
+
+                        <div class="price-row">
+                            <span class="price-name">Парящий профиль с подсветкой (4 м)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">17 500 ₽</span>
+                        </div>
+
+                        <div class="price-row">
+                            <span class="price-name">Скрытый карниз без подсветки (2.2 м)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">9 900 ₽</span>
+                        </div>
+
+                        <div class="price-row">
+                            <span class="price-name">Установка люстры (1 шт)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">1 500 ₽</span>
+                        </div>
+
+                        <div class="price-row">
+                            <span class="price-name">Матовое полотно (12.8 м2)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">4 800 ₽</span>
+                        </div>
+                    </div>`
+                },
+                { 
+                    url: "spalnya3.webp", 
+                    price: 49000, 
+                    priceType: "под ключ",
+                    text: `Матовый натяжной потолок на теневом профиле Bizon, классический карниз, встроенное трековое освещение и подстветка одной стены.
+                    
+                    <div class="price-breakdown">
+                        <div class="price-breakdown-title">Из чего состоит стоимость:</div>
+                       
+                        <div class="price-row">
+                            <span class="price-name">Теневой профиль Bizon (16 м)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">17 300 ₽</span>
+                        </div>
+
+
+                        <div class="price-row">
+                            <span class="price-name">Скрытый карниз с подсветкой (2.2 м)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">14 900 ₽</span>
+                        </div>
+
+                        <div class="price-row">
+                            <span class="price-name">Матовое полотно (12.8 м2)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">4 800 ₽</span>
+                        </div>
+                    </div>`
+                },
+                { 
+                    url: "spalnya2.webp", 
+                    price: 54000, 
+                    priceType: "под ключ",
+                    text: `Матовый натяжной потолок на теневом профиле Bizon, классический карниз, встроенное трековое освещение и подстветка одной стены.
+                    
+                    <div class="price-breakdown">
+                        <div class="price-breakdown-title">Из чего состоит стоимость:</div>
+                       
+                        <div class="price-row">
+                            <span class="price-name">Классический профиль (16 м)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">10 600 ₽</span>
+                        </div>
+
+
+                        <div class="price-row">
+                            <span class="price-name">Скрытый карниз без подсветки (2.2 м)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">9 900 ₽</span>
+                        </div>
+
+                        <div class="price-row">
+                            <span class="price-name">Монтаж встроенного трекового освещения (6 м)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">24 000 ₽</span>
+                        </div>
+
+                        <div class="price-row">
+                            <span class="price-name">Вставка г образная белая (11 м)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">1 800 ₽</span>
+                        </div>
+
+                        <div class="price-row">
+                            <span class="price-name">Установка светильников (2 шт)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">3 000 ₽</span>
+                        </div>
+
+                        <div class="price-row">
+                            <span class="price-name">Матовое полотно (12.8 м2)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">4 800 ₽</span>
+                        </div>
+                    </div>`
+                },
+                { 
+                    url: "spalnya5.webp", 
+                    price: 60000, 
+                    priceType: "под ключ",
+                    text: `Матовый натяжной потолок на теневом профиле Bizon, классический карниз, встроенное трековое освещение и подстветка одной стены.
+                    
+                    <div class="price-breakdown">
+                        <div class="price-breakdown-title">Из чего состоит стоимость:</div>
+                       
+                        <div class="price-row">
+                            <span class="price-name">Теневой профиль Bizon (16 м)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">17 300 ₽</span>
+                        </div>
+
+
+                        <div class="price-row">
+                            <span class="price-name">Скрытый карниз без подсветки (2.2 м)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">9 900 ₽</span>
+                        </div>
+
+                        <div class="price-row">
+                            <span class="price-name">Монтаж встроенного трекового освещения (7 м)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">32 000 ₽</span>
+                        </div>
+
+                        <div class="price-row">
+                            <span class="price-name">Матовое полотно (12.8 м2)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">4 800 ₽</span>
+                        </div>
+                    </div>`
+                },
+                { 
+                    url: "spalnya4.webp", 
+                    price: 67000, 
+                    priceType: "под ключ",
+                    text: `Матовый натяжной потолок на теневом профиле Bizon, классический карниз, встроенное трековое освещение и подстветка одной стены.
+                    
+                    <div class="price-breakdown">
+                        <div class="price-breakdown-title">Из чего состоит стоимость:</div>
+                       
+                        <div class="price-row">
+                            <span class="price-name">Теневой профиль Bizon (16 м)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">17 300 ₽</span>
+                        </div>
+
+
+                        <div class="price-row">
+                            <span class="price-name">Скрытый карниз без подсветки (2.2 м)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">9 900 ₽</span>
+                        </div>
+
+                        <div class="price-row">
+                            <span class="price-name">Световая линия (7 м)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">32 000 ₽</span>
+                        </div>
+
+                        <div class="price-row">
+                            <span class="price-name">Установка светильников (2 шт)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">3 000 ₽</span>
+                        </div>
+
+                        <div class="price-row">
+                            <span class="price-name">Матовое полотно (12.8 м2)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">4 800 ₽</span>
+                        </div>
+                    </div>`
+                },
+                { 
+                    url: "spalnya1.webp", 
+                    price: 71000, 
+                    priceType: "под ключ",
+                    text: `Матовый натяжной потолок на теневом профиле Bizon, классический карниз, встроенное трековое освещение и подстветка одной стены.
+                    
+                    <div class="price-breakdown">
+                        <div class="price-breakdown-title">Из чего состоит стоимость:</div>
+                        
+                        <div class="price-row">
+                            <span class="price-name">Парящий профиль с подсветкой (16 м)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">61 000 ₽</span>
+                        </div>
+
+                        <div class="price-row">
+                            <span class="price-name">Установка софитов (8 м)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">5 700 ₽</span>
+                        </div>
+
+                        <div class="price-row">
+                            <span class="price-name">Матовое полотно (12.8 м2)</span>
+                            <span class="price-dots"></span>
+                            <span class="price-value">4 800 ₽</span>
+                        </div>
+                    </div>`
+                }
             ]
         }
     ],
